@@ -42,4 +42,4 @@ Ready to run the cinema? Make sure you have **Java 11 or higher**.
    ```
 
 ---
-*Built with clean design and correctness in Java Swing/JavaFX by Hassan (Computer Science Student).*
+*Built with clean design and correctness in Java Swing/JavaFX (Computer Science Student).*
