@@ -5,6 +5,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
+import model.Movie;
+import model.Show;
 
 public class MovieBrowsingPanel extends JPanel {
     public MovieBrowsingPanel() {
@@ -38,10 +41,14 @@ public class MovieBrowsingPanel extends JPanel {
         JPanel cards = new JPanel(new GridLayout(0, 3, 20, 20));
         cards.setOpaque(false);
 
-        cards.add(createCard("Neon Horizon", "2h 14m • English", "8.9", new String[]{"SCI-FI", "ACTION"}, UIConstants.PRIMARY));
-        cards.add(createCard("Last Encore", "1h 56m • French", "9.2", new String[]{"DRAMA", "MUSICAL"}, new Color(0xffd54f)));
-        cards.add(createCard("Red Velocity", "2h 05m • English", "8.5", new String[]{"THRILLER", "RACING"}, UIConstants.PRIMARY));
-        cards.add(createCard("Glow Runners", "1h 42m • English", "7.8", new String[]{"ANIMATION", "FANTASY"}, new Color(0x76d1ff)));
+        List<Movie> movies = ServiceContext.getInstance().getMovieService().getAllMovies();
+        for (Movie movie : movies) {
+            int h = movie.getDuration() / 60;
+            int m = movie.getDuration() % 60;
+            String duration = h + "h " + m + "m";
+            String[] tags = movie.getGenre().split(", ");
+            cards.add(createCard(movie.getTitle(), duration + " • English", "8.5", tags, UIConstants.PRIMARY));
+        }
 
         JScrollPane scroll = new JScrollPane(cards, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -110,7 +117,14 @@ public class MovieBrowsingPanel extends JPanel {
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new SeatSelectionUI(titleText).setVisible(true);
+                Show firstShow = null;
+                for (Show s : ServiceContext.getInstance().getShowService().getAllShows()) {
+                    if (s.getMovie().getTitle().equals(titleText)) {
+                        firstShow = s;
+                        break;
+                    }
+                }
+                new SeatSelectionUI(firstShow).setVisible(true);
             }
         });
 

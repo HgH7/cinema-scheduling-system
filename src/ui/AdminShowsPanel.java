@@ -4,8 +4,18 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
+import model.Movie;
+import model.Screen;
+import model.Show;
 
 public class AdminShowsPanel extends JPanel {
+    private JComboBox<String> movieBox;
+    private JRadioButton screen1;
+    private JRadioButton screen2;
+    private JFormattedTextField timeField;
+    private DefaultTableModel tableModel;
+
     public AdminShowsPanel() {
         setOpaque(true);
         setBackground(UIConstants.BACKGROUND);
@@ -53,13 +63,15 @@ public class AdminShowsPanel extends JPanel {
 
         form.add(title);
         form.add(Box.createRigidArea(new Dimension(0, 16)));
-        form.add(createLabeledComponent("Select Movie", new JComboBox<>(new String[]{"The Midnight Odyssey", "Neon Horizons", "Shadow of the Peak"})));
+        movieBox = new JComboBox<>();
+        refreshMovieBox();
+        form.add(createLabeledComponent("Select Movie", movieBox));
         form.add(Box.createRigidArea(new Dimension(0, 12)));
 
         JPanel screens = new JPanel(new GridLayout(1, 2, 10, 0));
         screens.setOpaque(false);
-        JRadioButton screen1 = new JRadioButton("Screen 1", true);
-        JRadioButton screen2 = new JRadioButton("Screen 2");
+        screen1 = new JRadioButton("Screen 1", true);
+        screen2 = new JRadioButton("Screen 2");
         ButtonGroup group = new ButtonGroup();
         group.add(screen1);
         group.add(screen2);
@@ -74,7 +86,7 @@ public class AdminShowsPanel extends JPanel {
         form.add(createLabeledComponent("Auditorium Screen", screens));
         form.add(Box.createRigidArea(new Dimension(0, 12)));
 
-        JFormattedTextField timeField = new JFormattedTextField(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
+        timeField = new JFormattedTextField(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
         timeField.setBackground(UIConstants.SURFACE_ALT);
         timeField.setForeground(UIConstants.TEXT);
         timeField.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
@@ -87,6 +99,30 @@ public class AdminShowsPanel extends JPanel {
         scheduleButton.setFont(UIConstants.FONT_SEMIBOLD);
         scheduleButton.setFocusPainted(false);
         scheduleButton.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        scheduleButton.addActionListener(e -> {
+            String selectedMovieTitle = (String) movieBox.getSelectedItem();
+            String time = timeField.getText();
+            if (selectedMovieTitle != null && time != null && !time.isEmpty()) {
+                Movie movie = null;
+                for (Movie m : ServiceContext.getInstance().getMovieService().getAllMovies()) {
+                    if (m.getTitle().equals(selectedMovieTitle)) {
+                        movie = m;
+                        break;
+                    }
+                }
+                if (movie != null) {
+                    Screen screen = screen1.isSelected() ? new Screen(1, "Screen 1", 4, 10) : new Screen(2, "Screen 2", 4, 10);
+                    int newId = ServiceContext.getInstance().getShowService().getAllShows().size() + 1;
+                    Show newShow = ServiceContext.getInstance().getShowService().addShow(newId, movie, screen, time);
+                    if (newShow == null) {
+                        JOptionPane.showMessageDialog(this, "Time conflict on this screen.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        refreshTable();
+                        timeField.setText("");
+                    }
+                }
+            }
+        });
         form.add(scheduleButton);
 
         return form;
@@ -107,19 +143,14 @@ public class AdminShowsPanel extends JPanel {
         panel.add(title, BorderLayout.NORTH);
 
         String[] columns = {"Movie", "Screen", "Time", "Status"};
-        Object[][] rows = {
-                {"The Midnight Odyssey", "Screen 1", "18:30", "Active"},
-                {"Neon Horizons", "Screen 2", "20:15", "Full"},
-                {"Shadow of the Peak", "Screen 1", "21:30", "Cancelled"}
-        };
-
-        DefaultTableModel model = new DefaultTableModel(rows, columns) {
+        tableModel = new DefaultTableModel(new Object[0][0], columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        JTable table = new JTable(model);
+        refreshTable();
+        JTable table = new JTable(tableModel);
         table.setBackground(UIConstants.SURFACE);
         table.setForeground(UIConstants.TEXT);
         table.setFont(UIConstants.FONT_REGULAR);
@@ -135,6 +166,20 @@ public class AdminShowsPanel extends JPanel {
         scroll.setBorder(BorderFactory.createEmptyBorder());
         panel.add(scroll, BorderLayout.CENTER);
         return panel;
+    }
+
+    private void refreshMovieBox() {
+        movieBox.removeAllItems();
+        for (Movie m : ServiceContext.getInstance().getMovieService().getAllMovies()) {
+            movieBox.addItem(m.getTitle());
+        }
+    }
+
+    private void refreshTable() {
+        tableModel.setRowCount(0);
+        for (Show s : ServiceContext.getInstance().getShowService().getAllShows()) {
+            tableModel.addRow(new Object[]{s.getMovie().getTitle(), s.getScreen().getName(), s.getShowTime(), "Active"});
+        }
     }
 
     private JPanel createLabeledComponent(String labelText, JComponent component) {

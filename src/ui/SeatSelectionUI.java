@@ -5,14 +5,21 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import model.Seat;
+import model.Show;
+import model.Booking;
 
 public class SeatSelectionUI extends JFrame {
     private final JLabel totalLabel = new JLabel();
     private final int pricePerSeat = 14;
     private final SeatToggleButton[][] seatButtons = new SeatToggleButton[4][10];
+    private final Show show;
 
-    public SeatSelectionUI(String movieTitle) {
+    public SeatSelectionUI(Show show) {
         super("Select Your Seats");
+        this.show = show;
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1000, 780);
         setLocationRelativeTo(null);
@@ -21,14 +28,14 @@ public class SeatSelectionUI extends JFrame {
         root.setBackground(UIConstants.BACKGROUND);
         root.setBorder(new EmptyBorder(18, 18, 18, 18));
 
-        root.add(createHeader(movieTitle), BorderLayout.NORTH);
+        root.add(createHeader(), BorderLayout.NORTH);
         root.add(createSeatPanel(), BorderLayout.CENTER);
         root.add(createFooter(), BorderLayout.SOUTH);
 
         setContentPane(root);
     }
 
-    private JPanel createHeader(String movieTitle) {
+    private JPanel createHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
@@ -36,7 +43,8 @@ public class SeatSelectionUI extends JFrame {
         title.setForeground(UIConstants.TEXT);
         title.setFont(UIConstants.FONT_TITLE);
 
-        JLabel subtitle = new JLabel(movieTitle + " • Grand Theater • Screen 4 • Row A-M");
+        String subtitleText = show != null ? (show.getMovie().getTitle() + " • Grand Theater • " + show.getScreen().getName() + " • Row A-D • " + show.getShowTime()) : "Movie • Grand Theater • Screen • Row A-D";
+        JLabel subtitle = new JLabel(subtitleText);
         subtitle.setForeground(UIConstants.TEXT_MUTED);
         subtitle.setFont(UIConstants.FONT_REGULAR);
 
@@ -158,7 +166,34 @@ public class SeatSelectionUI extends JFrame {
         confirm.setForeground(Color.WHITE);
         confirm.setFont(UIConstants.FONT_SEMIBOLD);
         confirm.setFocusPainted(false);
-        confirm.addActionListener(e -> JOptionPane.showMessageDialog(this, "Booking confirmed", "Booking", JOptionPane.INFORMATION_MESSAGE));
+        confirm.addActionListener(e -> {
+            if (show == null) {
+                JOptionPane.showMessageDialog(this, "No show available for this movie.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            List<Seat> selectedSeats = new ArrayList<>();
+            for (int row = 0; row < seatButtons.length; row++) {
+                for (int col = 0; col < seatButtons[row].length; col++) {
+                    SeatToggleButton btn = seatButtons[row][col];
+                    if (btn != null && btn.isSelected() && !btn.booked) {
+                        String r = String.valueOf((char)('A' + row));
+                        selectedSeats.add(new Seat(r, col + 1));
+                    }
+                }
+            }
+            if (selectedSeats.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select at least one seat.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int newId = ServiceContext.getInstance().getBookingService().getAllBookings().size() + 1;
+            Booking b = ServiceContext.getInstance().getBookingService().createBooking(newId, show, selectedSeats, "Moviegoer");
+            if (b != null) {
+                JOptionPane.showMessageDialog(this, "Booking confirmed! ID: #CR-" + String.format("%04d", b.getId()), "Booking", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Some selected seats are no longer available.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         footer.add(totalLabel, BorderLayout.WEST);
         footer.add(confirm, BorderLayout.EAST);

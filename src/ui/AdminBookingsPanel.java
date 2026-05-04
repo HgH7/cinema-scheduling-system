@@ -4,6 +4,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import model.Booking;
+import model.Seat;
 
 public class AdminBookingsPanel extends JPanel {
     public AdminBookingsPanel() {
@@ -63,19 +67,18 @@ public class AdminBookingsPanel extends JPanel {
         ));
 
         String[] columns = {"Booking ID", "Movie Title", "User Name", "Selected Seats", "Date & Time", "Status"};
-        Object[][] rows = {
-                {"#CR-9204", "Midnight Horizon", "Alex Sterling", "H-12, H-13", "Oct 24, 18:45 PM", "Confirmed"},
-                {"#CR-9205", "Velocity X Rush", "Elena Rodriguez", "C-04", "Oct 24, 21:15 PM", "Pending"},
-                {"#CR-9206", "The Enigma Grove", "Marcus Thorne", "A-01, A-02, A-03", "Oct 25, 14:00 PM", "Confirmed"},
-                {"#CR-9207", "Echoes of Silence", "Sarah Jenkins", "L-20", "Oct 25, 18:30 PM", "Cancelled"}
-        };
-
-        DefaultTableModel model = new DefaultTableModel(rows, columns) {
+        DefaultTableModel model = new DefaultTableModel(new Object[0][0], columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
+
+        List<Booking> bookings = ServiceContext.getInstance().getBookingService().getAllBookings();
+        for (Booking b : bookings) {
+            String seats = b.getSeats().stream().map(s -> s.getRow() + s.getNumber()).collect(Collectors.joining(", "));
+            model.addRow(new Object[]{"#CR-" + String.format("%04d", b.getId()), b.getShow().getMovie().getTitle(), b.getUserName(), seats, "Today, " + b.getShow().getShowTime(), "Confirmed"});
+        }
 
         JTable table = new JTable(model);
         table.setBackground(UIConstants.SURFACE);

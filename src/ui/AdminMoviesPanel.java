@@ -4,8 +4,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
+import model.Movie;
 
 public class AdminMoviesPanel extends JPanel {
+    private final JTextField titleField = new JTextField();
+    private final JTextField durationField = new JTextField();
+    private final JComboBox<String> genreBox = new JComboBox<>(new String[]{"Action", "Drama", "Sci-Fi", "Horror", "Comedy", "Animation, Fantasy", "Thriller, Racing", "Sci-Fi, Action", "Drama, Musical"});
+    private DefaultTableModel tableModel;
     public AdminMoviesPanel() {
         setOpaque(true);
         setBackground(UIConstants.BACKGROUND);
@@ -55,14 +61,13 @@ public class AdminMoviesPanel extends JPanel {
         form.add(sectionTitle);
         form.add(Box.createRigidArea(new Dimension(0, 16)));
 
-        form.add(createLabeledField("Movie Title", new JTextField()));
+        form.add(createLabeledField("Movie Title", titleField));
         form.add(Box.createRigidArea(new Dimension(0, 12)));
 
         JPanel row = new JPanel(new GridLayout(1, 2, 12, 0));
         row.setOpaque(false);
-        row.add(createLabeledField("Duration (min)", new JTextField()));
-        JComboBox<String> genre = new JComboBox<>(new String[]{"Action", "Drama", "Sci-Fi", "Horror", "Comedy"});
-        row.add(createLabeledField("Genre", genre));
+        row.add(createLabeledField("Duration (min)", durationField));
+        row.add(createLabeledField("Genre", genreBox));
         form.add(row);
         form.add(Box.createRigidArea(new Dimension(0, 12)));
 
@@ -81,6 +86,23 @@ public class AdminMoviesPanel extends JPanel {
         addButton.setFont(UIConstants.FONT_SEMIBOLD);
         addButton.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         addButton.setFocusPainted(false);
+        addButton.addActionListener(e -> {
+            String title = titleField.getText();
+            String durationText = durationField.getText();
+            String genre = (String) genreBox.getSelectedItem();
+            if (!title.isEmpty() && !durationText.isEmpty()) {
+                try {
+                    int duration = Integer.parseInt(durationText);
+                    int newId = ServiceContext.getInstance().getMovieService().getAllMovies().size() + 1;
+                    ServiceContext.getInstance().getMovieService().addMovie(newId, title, duration, genre);
+                    refreshTable();
+                    titleField.setText("");
+                    durationField.setText("");
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Duration must be a number", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         form.add(addButton);
 
         return form;
@@ -101,20 +123,15 @@ public class AdminMoviesPanel extends JPanel {
         panel.add(title, BorderLayout.NORTH);
 
         String[] columns = {"Movie", "Duration", "Genre", "Actions"};
-        Object[][] rows = {
-                {"The Midnight Protocol", "142 min", "Sci-Fi", "Delete"},
-                {"Dune: Part Two", "166 min", "Adventure", "Delete"},
-                {"Velocity X", "118 min", "Action", "Delete"},
-                {"Echoes of Silence", "95 min", "Drama", "Delete"}
-        };
-        DefaultTableModel model = new DefaultTableModel(rows, columns) {
+        tableModel = new DefaultTableModel(new Object[0][0], columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
+        refreshTable();
 
-        JTable table = new JTable(model);
+        JTable table = new JTable(tableModel);
         table.setBackground(UIConstants.SURFACE);
         table.setForeground(UIConstants.TEXT);
         table.setFont(UIConstants.FONT_REGULAR);
@@ -132,6 +149,14 @@ public class AdminMoviesPanel extends JPanel {
 
         panel.add(scroll, BorderLayout.CENTER);
         return panel;
+    }
+
+    private void refreshTable() {
+        tableModel.setRowCount(0);
+        List<Movie> movies = ServiceContext.getInstance().getMovieService().getAllMovies();
+        for (Movie m : movies) {
+            tableModel.addRow(new Object[]{m.getTitle(), m.getDuration() + " min", m.getGenre(), "Delete"});
+        }
     }
 
     private JPanel createLabeledField(String labelText, JComponent field) {
