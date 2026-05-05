@@ -1,0 +1,3 @@
+1|dune part 1|99|Action|D:\programing\cinema-scheduling-system\img\MV5BNTc0YmQxMjEtODI5MC00NjFiLTlkMWUtOGQ5NjFmYWUyZGJhXkEyXkFqcGc@._V1_.jpg
+2|dune part 2|120|Action|D:\programing\cinema-scheduling-system\img\download.jfif
+3|batman|100|Action|D:\programing\cinema-scheduling-system\img\capsule_616x353.jpg

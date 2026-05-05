@@ -185,7 +185,10 @@ public class SeatSelectionUI extends JFrame {
                     SeatToggleButton btn = seatButtons[row][col];
                     if (btn != null && btn.isSelected() && !btn.booked) {
                         String r = String.valueOf((char)('A' + row));
-                        selectedSeats.add(new Seat(r, col + 1));
+                        Seat actualSeat = show.getSeat(r, col + 1);
+                        if (actualSeat != null) {
+                            selectedSeats.add(actualSeat);
+                        }
                     }
                 }
             }

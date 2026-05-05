@@ -161,7 +161,7 @@ public class AdminBookingsPanel extends JPanel {
                 String line = lines.get(i);
                 currentReceipt.add(line);
                 
-                if (line.startsWith("Booking ID: ") && line.contains(bookingId)) {
+                if (line.startsWith("Booking ID: ") && line.equals("Booking ID: " + bookingId)) {
                     deleteThisReceipt = true;
                 }
                 

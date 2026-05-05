@@ -2,51 +2,51 @@
       CINERESERVE RECEIPT     
 ==============================
 Booking ID: #CR-0001
-Date: 2026-05-05 12:39:11
-Movie: Neon Horizon
+Date: 2026-05-05 13:47:38
+Movie: dune part 1
 Screen: Screen 1
-Showtime: 18:30
+Showtime: 16:20
 ------------------------------
-Seats: B2, C2, D2
+Seats: A1, A2, B1
 Total Price: $42.00
 ==============================
 
 ==============================
       CINERESERVE RECEIPT     
 ==============================
-Booking ID: #CR-0001
-Date: 2026-05-05 12:44:11
-Movie: Last Encore
+Booking ID: #CR-0002
+Date: 2026-05-05 13:47:45
+Movie: dune part 1
+Screen: Screen 1
+Showtime: 16:20
+------------------------------
+Seats: D4, D5, D6
+Total Price: $42.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0003
+Date: 2026-05-05 13:47:49
+Movie: dune part 2
 Screen: Screen 2
-Showtime: 20:15
+Showtime: 16:30
 ------------------------------
-Seats: C4, C5, D5
+Seats: A4, A5, A6
 Total Price: $42.00
 ==============================
 
 ==============================
       CINERESERVE RECEIPT     
 ==============================
-Booking ID: #CR-0001
-Date: 2026-05-05 13:07:51
+Booking ID: #CR-0004
+Date: 2026-05-05 13:48:21
 Movie: batman
-Screen: Screen 2
-Showtime: 19:30
+Screen: Screen 3
+Showtime: 21:30
 ------------------------------
-Seats: C4, C5, D4
-Total Price: $42.00
-==============================
-
-==============================
-      CINERESERVE RECEIPT     
-==============================
-Booking ID: #CR-0001
-Date: 2026-05-05 13:23:00
-Movie: batman
-Screen: Screen 2
-Showtime: 16:00
-------------------------------
-Seats: C2, D1, D2
+Seats: B9, C8, C9
 Total Price: $42.00
 ==============================
 
