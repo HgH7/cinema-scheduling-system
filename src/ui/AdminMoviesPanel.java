@@ -11,6 +11,7 @@ public class AdminMoviesPanel extends JPanel {
     private final JTextField titleField = new JTextField();
     private final JTextField durationField = new JTextField();
     private final JComboBox<String> genreBox = new JComboBox<>(new String[]{"Action", "Drama", "Sci-Fi", "Horror", "Comedy", "Animation, Fantasy", "Thriller, Racing", "Sci-Fi, Action", "Drama, Musical"});
+    private final JTextField imagePathField = new JTextField();
     private DefaultTableModel tableModel;
     public AdminMoviesPanel() {
         setOpaque(true);
@@ -71,13 +72,26 @@ public class AdminMoviesPanel extends JPanel {
         form.add(row);
         form.add(Box.createRigidArea(new Dimension(0, 12)));
 
-        JPanel posterPanel = new JPanel(new BorderLayout());
-        posterPanel.setOpaque(true);
-        posterPanel.setBackground(UIConstants.SURFACE_ALT);
-        posterPanel.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
-        posterPanel.setPreferredSize(new Dimension(0, 120));
-        posterPanel.add(new JLabel("Upload Cover Art", SwingConstants.CENTER), BorderLayout.CENTER);
-        form.add(createLabeledComponent("Poster Preview", posterPanel));
+        JPanel imagePathPanel = new JPanel(new BorderLayout(8, 0));
+        imagePathPanel.setOpaque(false);
+        imagePathField.setBackground(UIConstants.SURFACE_ALT);
+        imagePathField.setForeground(UIConstants.TEXT);
+        imagePathField.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+        imagePathPanel.add(imagePathField, BorderLayout.CENTER);
+        
+        JButton browseButton = new JButton("Browse...");
+        browseButton.setBackground(UIConstants.SURFACE_ALT);
+        browseButton.setForeground(UIConstants.TEXT);
+        browseButton.setFocusPainted(false);
+        browseButton.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                imagePathField.setText(chooser.getSelectedFile().getAbsolutePath());
+            }
+        });
+        imagePathPanel.add(browseButton, BorderLayout.EAST);
+        
+        form.add(createLabeledComponent("Image Path or URL", imagePathPanel));
         form.add(Box.createRigidArea(new Dimension(0, 18)));
 
         JButton addButton = new JButton("Add to Library");
@@ -90,14 +104,17 @@ public class AdminMoviesPanel extends JPanel {
             String title = titleField.getText();
             String durationText = durationField.getText();
             String genre = (String) genreBox.getSelectedItem();
+            String imagePath = imagePathField.getText();
             if (!title.isEmpty() && !durationText.isEmpty()) {
                 try {
                     int duration = Integer.parseInt(durationText);
                     int newId = ServiceContext.getInstance().getMovieService().getAllMovies().size() + 1;
-                    ServiceContext.getInstance().getMovieService().addMovie(newId, title, duration, genre);
+                    ServiceContext.getInstance().getMovieService().addMovie(newId, title, duration, genre, imagePath);
+                    ServiceContext.getInstance().saveMovies();
                     refreshTable();
                     titleField.setText("");
                     durationField.setText("");
+                    imagePathField.setText("");
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Duration must be a number", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -143,6 +160,29 @@ public class AdminMoviesPanel extends JPanel {
         table.getTableHeader().setBackground(UIConstants.SURFACE_ALT);
         table.getTableHeader().setForeground(UIConstants.TEXT_MUTED);
         table.getTableHeader().setFont(UIConstants.FONT_REGULAR);
+
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = table.rowAtPoint(evt.getPoint());
+                int col = table.columnAtPoint(evt.getPoint());
+                if (row >= 0 && col == 3) {
+                    String title = (String) tableModel.getValueAt(row, 0);
+                    Movie toRemove = null;
+                    for (Movie m : ServiceContext.getInstance().getMovieService().getAllMovies()) {
+                        if (m.getTitle().equals(title)) {
+                            toRemove = m;
+                            break;
+                        }
+                    }
+                    if (toRemove != null) {
+                        ServiceContext.getInstance().getMovieService().removeMovie(toRemove.getId());
+                        ServiceContext.getInstance().saveMovies();
+                        refreshTable();
+                    }
+                }
+            }
+        });
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder());

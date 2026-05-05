@@ -46,38 +46,8 @@ public class AdminUI extends JFrame {
 
         side.add(createSidebarButton("Movies", "movies", true));
         side.add(createSidebarButton("Showtimes", "shows", false));
-        side.add(createSidebarButton("Theaters", "theaters", false));
         side.add(createSidebarButton("Bookings", "bookings", false));
-        side.add(createSidebarButton("Settings", "settings", false));
         side.add(Box.createVerticalGlue());
-
-        JPanel profile = new JPanel(new BorderLayout(12, 0));
-        profile.setOpaque(false);
-        profile.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, UIConstants.BORDER));
-        profile.setPreferredSize(new Dimension(220, 88));
-        JLabel avatar = new JLabel("👤");
-        avatar.setOpaque(true);
-        avatar.setBackground(UIConstants.SURFACE_ALT);
-        avatar.setForeground(UIConstants.TEXT);
-        avatar.setHorizontalAlignment(SwingConstants.CENTER);
-        avatar.setPreferredSize(new Dimension(48, 48));
-        avatar.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
-
-        JPanel details = new JPanel();
-        details.setOpaque(false);
-        details.setLayout(new BoxLayout(details, BoxLayout.Y_AXIS));
-        JLabel name = new JLabel("Admin User");
-        name.setForeground(UIConstants.TEXT);
-        name.setFont(UIConstants.FONT_SEMIBOLD);
-        JLabel role = new JLabel("Super Admin");
-        role.setForeground(UIConstants.TEXT_MUTED);
-        role.setFont(UIConstants.FONT_REGULAR);
-        details.add(name);
-        details.add(role);
-
-        profile.add(avatar, BorderLayout.WEST);
-        profile.add(details, BorderLayout.CENTER);
-        side.add(profile);
 
         return side;
     }

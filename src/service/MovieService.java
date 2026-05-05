@@ -9,8 +9,8 @@ public class MovieService {
 
     private List<Movie> movies = new ArrayList<>();
 
-    public Movie addMovie(int id, String title, int duration, String genre) {
-        Movie movie = new Movie(id, title, duration, genre);
+    public Movie addMovie(int id, String title, int duration, String genre, String imagePath) {
+        Movie movie = new Movie(id, title, duration, genre, imagePath);
         movies.add(movie);
         return movie;
     }

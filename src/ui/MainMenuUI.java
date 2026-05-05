@@ -45,8 +45,8 @@ public class MainMenuUI {
         buttons.setOpaque(false);
         buttons.setMaximumSize(new Dimension(820, 240));
 
-        JButton userButton = buildModeButton("CineReserve", "Browse movies, choose showtimes, and select seats.");
-        JButton adminButton = buildModeButton("Cinema Admin", "Manage movies, schedule shows, and monitor bookings.");
+        JButton userButton = buildModeButton("User Side", "Browse movies, choose showtimes, and select seats.");
+        JButton adminButton = buildModeButton("Admin Side", "Manage movies, schedule shows, and monitor bookings.");
 
         userButton.addActionListener(e -> {
             frame.dispose();

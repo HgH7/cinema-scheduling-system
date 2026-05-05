@@ -13,14 +13,15 @@ public class UserUI extends JFrame {
         JPanel root = new JPanel(new BorderLayout());
         root.setBackground(UIConstants.BACKGROUND);
 
-        root.add(createTopBar(), BorderLayout.NORTH);
-        root.add(new MovieBrowsingPanel(), BorderLayout.CENTER);
+        MovieBrowsingPanel browsingPanel = new MovieBrowsingPanel();
+        root.add(createTopBar(browsingPanel), BorderLayout.NORTH);
+        root.add(browsingPanel, BorderLayout.CENTER);
 
         setContentPane(root);
         setVisible(true);
     }
 
-    private JPanel createTopBar() {
+    private JPanel createTopBar(MovieBrowsingPanel browsingPanel) {
         JPanel bar = new JPanel(new BorderLayout(16, 0));
         bar.setBackground(new Color(0x0f0f0f));
         bar.setBorder(BorderFactory.createEmptyBorder(16, 24, 16, 24));
@@ -40,29 +41,49 @@ public class UserUI extends JFrame {
         ));
         search.setPreferredSize(new Dimension(360, 34));
         search.setText("Search movies, actors, genres...");
+        search.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (search.getText().equals("Search movies, actors, genres...")) {
+                    search.setText("");
+                }
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (search.getText().isEmpty()) {
+                    search.setText("Search movies, actors, genres...");
+                    browsingPanel.filterMovies("");
+                }
+            }
+        });
+        search.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { doSearch(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { doSearch(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { doSearch(); }
+            private void doSearch() {
+                String text = search.getText();
+                if (!text.equals("Search movies, actors, genres...")) {
+                    browsingPanel.filterMovies(text);
+                }
+            }
+        });
         searchPanel.add(search, BorderLayout.CENTER);
 
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         actions.setOpaque(false);
-        JButton notifications = new JButton("🔔");
-        notifications.setOpaque(true);
-        notifications.setBackground(UIConstants.SURFACE_ALT);
-        notifications.setForeground(UIConstants.TEXT);
-        notifications.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
-        JButton account = new JButton("👤");
-        account.setOpaque(true);
-        account.setBackground(UIConstants.SURFACE_ALT);
-        account.setForeground(UIConstants.TEXT);
-        account.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
-        JButton login = new JButton("Login");
-        login.setOpaque(true);
-        login.setBackground(UIConstants.SURFACE_ALT);
-        login.setForeground(UIConstants.TEXT);
-        login.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+        JButton switchMode = new JButton("Switch Mode");
+        switchMode.setOpaque(true);
+        switchMode.setBackground(UIConstants.PRIMARY);
+        switchMode.setForeground(Color.WHITE);
+        switchMode.setFont(UIConstants.FONT_SEMIBOLD);
+        switchMode.setFocusPainted(false);
+        switchMode.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        switchMode.addActionListener(e -> {
+            dispose();
+            new AdminUI();
+        });
 
-        actions.add(notifications);
-        actions.add(account);
-        actions.add(login);
+        actions.add(switchMode);
 
         bar.add(logo, BorderLayout.WEST);
         bar.add(searchPanel, BorderLayout.CENTER);

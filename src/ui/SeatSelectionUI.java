@@ -5,6 +5,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import model.Seat;
@@ -117,9 +122,12 @@ public class SeatSelectionUI extends JFrame {
                 }
                 SeatToggleButton seatButton = new SeatToggleButton(rows[row] + String.valueOf(col + 1));
                 seatButtons[row][col] = seatButton;
-                if ((row == 0 && col >= 4 && col <= 7) || (row == 3 && col >= 8)) {
+                
+                Seat actualSeat = show != null ? show.getSeat(String.valueOf(rows[row]), col + 1) : null;
+                if (actualSeat != null && !actualSeat.isAvailable()) {
                     seatButton.setBooked(true);
                 }
+                
                 seatButton.addActionListener(e -> updateTotal());
                 grid.add(seatButton, gbc);
             }
@@ -188,7 +196,7 @@ public class SeatSelectionUI extends JFrame {
             int newId = ServiceContext.getInstance().getBookingService().getAllBookings().size() + 1;
             Booking b = ServiceContext.getInstance().getBookingService().createBooking(newId, show, selectedSeats, "Moviegoer");
             if (b != null) {
-                JOptionPane.showMessageDialog(this, "Booking confirmed! ID: #CR-" + String.format("%04d", b.getId()), "Booking", JOptionPane.INFORMATION_MESSAGE);
+                showReceiptAndSave(b);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Some selected seats are no longer available.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -198,6 +206,42 @@ public class SeatSelectionUI extends JFrame {
         footer.add(totalLabel, BorderLayout.WEST);
         footer.add(confirm, BorderLayout.EAST);
         return footer;
+    }
+
+    private void showReceiptAndSave(Booking b) {
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("==============================\n");
+        receipt.append("      CINERESERVE RECEIPT     \n");
+        receipt.append("==============================\n");
+        receipt.append("Booking ID: #CR-").append(String.format("%04d", b.getId())).append("\n");
+        receipt.append("Date: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n");
+        receipt.append("Movie: ").append(b.getShow().getMovie().getTitle()).append("\n");
+        receipt.append("Screen: ").append(b.getShow().getScreen().getName()).append("\n");
+        receipt.append("Showtime: ").append(b.getShow().getShowTime()).append("\n");
+        receipt.append("------------------------------\n");
+        receipt.append("Seats: ");
+        for (int i = 0; i < b.getSeats().size(); i++) {
+            Seat s = b.getSeats().get(i);
+            receipt.append(s.getRow()).append(s.getNumber());
+            if (i < b.getSeats().size() - 1) receipt.append(", ");
+        }
+        receipt.append("\n");
+        double total = b.getSeats().size() * pricePerSeat;
+        receipt.append(String.format("Total Price: $%.2f\n", total));
+        receipt.append("==============================\n");
+
+        try (PrintWriter out = new PrintWriter(new FileWriter("receipts.txt", true))) {
+            out.println(receipt.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JTextArea textArea = new JTextArea(receipt.toString());
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        textArea.setEditable(false);
+        textArea.setBackground(UIConstants.SURFACE);
+        textArea.setForeground(UIConstants.TEXT);
+        JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "Booking Receipt", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void updateTotal() {
@@ -218,30 +262,33 @@ public class SeatSelectionUI extends JFrame {
 
         SeatToggleButton(String label) {
             super(label);
-            setOpaque(true);
+            setOpaque(false);
+            setContentAreaFilled(false);
             setForeground(UIConstants.TEXT);
-            setBackground(UIConstants.AVAILABLE);
             setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
             setFont(UIConstants.FONT_REGULAR);
             setPreferredSize(new Dimension(56, 38));
             setFocusPainted(false);
-            addActionListener(e -> refreshState());
+            addActionListener(e -> repaint());
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            if (booked) {
+                g.setColor(UIConstants.BOOKED);
+            } else if (isSelected()) {
+                g.setColor(UIConstants.SELECTED_SEAT);
+            } else {
+                g.setColor(UIConstants.AVAILABLE);
+            }
+            g.fillRect(0, 0, getWidth(), getHeight());
+            super.paintComponent(g);
         }
 
         void setBooked(boolean booked) {
             this.booked = booked;
             setEnabled(!booked);
-            refreshState();
-        }
-
-        void refreshState() {
-            if (booked) {
-                setBackground(UIConstants.BOOKED);
-            } else if (isSelected()) {
-                setBackground(UIConstants.SELECTED_SEAT);
-            } else {
-                setBackground(UIConstants.AVAILABLE);
-            }
+            repaint();
         }
     }
 }

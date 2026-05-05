@@ -4,12 +4,17 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import model.Booking;
 import model.Seat;
 
 public class AdminBookingsPanel extends JPanel {
+    private DefaultTableModel tableModel;
+
     public AdminBookingsPanel() {
         setOpaque(true);
         setBackground(UIConstants.BACKGROUND);
@@ -18,6 +23,13 @@ public class AdminBookingsPanel extends JPanel {
 
         add(createHeader(), BorderLayout.NORTH);
         add(createContent(), BorderLayout.CENTER);
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                refreshTable();
+            }
+        });
     }
 
     private JPanel createHeader() {
@@ -41,7 +53,7 @@ public class AdminBookingsPanel extends JPanel {
     }
 
     private JPanel createFilterPanel() {
-        JPanel filters = new JPanel(new GridLayout(1, 4, 12, 12));
+        JPanel filters = new JPanel(new GridLayout(1, 3, 12, 12));
         filters.setOpaque(true);
         filters.setBackground(UIConstants.SURFACE);
         filters.setBorder(BorderFactory.createCompoundBorder(
@@ -51,8 +63,7 @@ public class AdminBookingsPanel extends JPanel {
 
         filters.add(labeledField("Search Bookings", new JTextField()));
         filters.add(labeledField("Date Range", new JComboBox<>(new String[]{"Last 7 Days", "Last 30 Days", "Custom Range"})));
-        filters.add(labeledField("Theater", new JComboBox<>(new String[]{"All Locations", "Grand Plaza IMAX", "Downtown 8", "Westside Cinema"})));
-        filters.add(labeledField("Status", new JComboBox<>(new String[]{"All Statuses", "Confirmed", "Pending", "Cancelled"})));
+        filters.add(labeledField("Status", new JComboBox<>(new String[]{"All Statuses", "Confirmed", "Cancelled"})));
 
         return filters;
     }
@@ -66,21 +77,17 @@ public class AdminBookingsPanel extends JPanel {
                 new EmptyBorder(16, 16, 16, 16)
         ));
 
-        String[] columns = {"Booking ID", "Movie Title", "User Name", "Selected Seats", "Date & Time", "Status"};
-        DefaultTableModel model = new DefaultTableModel(new Object[0][0], columns) {
+        String[] columns = {"Booking ID", "Movie Title", "User Name", "Selected Seats", "Date & Time", "Status", "Actions"};
+        tableModel = new DefaultTableModel(new Object[0][0], columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        List<Booking> bookings = ServiceContext.getInstance().getBookingService().getAllBookings();
-        for (Booking b : bookings) {
-            String seats = b.getSeats().stream().map(s -> s.getRow() + s.getNumber()).collect(Collectors.joining(", "));
-            model.addRow(new Object[]{"#CR-" + String.format("%04d", b.getId()), b.getShow().getMovie().getTitle(), b.getUserName(), seats, "Today, " + b.getShow().getShowTime(), "Confirmed"});
-        }
+        refreshTable();
 
-        JTable table = new JTable(model);
+        JTable table = new JTable(tableModel);
         table.setBackground(UIConstants.SURFACE);
         table.setForeground(UIConstants.TEXT);
         table.setFont(UIConstants.FONT_REGULAR);
@@ -92,10 +99,85 @@ public class AdminBookingsPanel extends JPanel {
         table.getTableHeader().setForeground(UIConstants.TEXT_MUTED);
         table.getTableHeader().setFont(UIConstants.FONT_REGULAR);
 
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = table.rowAtPoint(evt.getPoint());
+                int col = table.columnAtPoint(evt.getPoint());
+                if (row >= 0 && col == 6) {
+                    String id = (String) tableModel.getValueAt(row, 0);
+                    cancelBooking(id);
+                }
+            }
+        });
+
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         panel.add(scroll, BorderLayout.CENTER);
         return panel;
+    }
+
+    private void refreshTable() {
+        if (tableModel == null) return;
+        tableModel.setRowCount(0);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("receipts.txt"))) {
+            String line;
+            String id = "";
+            String movie = "";
+            String user = "Moviegoer";
+            String seats = "";
+            String time = "";
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("Booking ID: ")) {
+                    id = line.substring(12);
+                } else if (line.startsWith("Movie: ")) {
+                    movie = line.substring(7);
+                } else if (line.startsWith("Date: ")) {
+                    time = line.substring(6);
+                } else if (line.startsWith("Seats: ")) {
+                    seats = line.substring(7);
+                } else if (line.startsWith("Total Price: ")) {
+                    tableModel.addRow(new Object[]{id, movie, user, seats, time, "Confirmed", "Cancel"});
+                    id = ""; movie = ""; seats = ""; time = "";
+                }
+            }
+        } catch (IOException e) {
+            // File might not exist yet, ignore
+        }
+    }
+
+    private void cancelBooking(String bookingId) {
+        java.io.File file = new java.io.File("receipts.txt");
+        if (!file.exists()) return;
+
+        try {
+            java.util.List<String> lines = java.nio.file.Files.readAllLines(file.toPath());
+            java.util.List<String> outputLines = new java.util.ArrayList<>();
+            java.util.List<String> currentReceipt = new java.util.ArrayList<>();
+            boolean deleteThisReceipt = false;
+
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                currentReceipt.add(line);
+                
+                if (line.startsWith("Booking ID: ") && line.contains(bookingId)) {
+                    deleteThisReceipt = true;
+                }
+                
+                if (line.trim().isEmpty() || i == lines.size() - 1) {
+                    if (!deleteThisReceipt) {
+                        outputLines.addAll(currentReceipt);
+                    }
+                    currentReceipt.clear();
+                    deleteThisReceipt = false;
+                }
+            }
+            java.nio.file.Files.write(file.toPath(), outputLines);
+            refreshTable();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private JPanel labeledField(String labelText, JComponent component) {

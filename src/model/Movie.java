@@ -5,12 +5,14 @@ public class Movie {
     private String title;
     private int duration;
     private String genre;
+    private String imagePath;
 
-    public Movie(int id, String title, int duration, String genre) {
+    public Movie(int id, String title, int duration, String genre, String imagePath) {
         this.id = id;
         this.title = title;
         this.duration = duration;
         this.genre = genre;
+        this.imagePath = imagePath;
     }
 
     public int getId() {
@@ -43,5 +45,13 @@ public class Movie {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

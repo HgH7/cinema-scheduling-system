@@ -10,6 +10,8 @@ import model.Movie;
 import model.Show;
 
 public class MovieBrowsingPanel extends JPanel {
+    private JPanel cards;
+
     public MovieBrowsingPanel() {
         setOpaque(true);
         setBackground(UIConstants.BACKGROUND);
@@ -18,6 +20,13 @@ public class MovieBrowsingPanel extends JPanel {
 
         add(createHeader(), BorderLayout.NORTH);
         add(createMovieGrid(), BorderLayout.CENTER);
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                filterMovies("");
+            }
+        });
     }
 
     private JPanel createHeader() {
@@ -38,17 +47,9 @@ public class MovieBrowsingPanel extends JPanel {
     }
 
     private JScrollPane createMovieGrid() {
-        JPanel cards = new JPanel(new GridLayout(0, 3, 20, 20));
+        cards = new JPanel(new GridLayout(0, 3, 20, 20));
         cards.setOpaque(false);
-
-        List<Movie> movies = ServiceContext.getInstance().getMovieService().getAllMovies();
-        for (Movie movie : movies) {
-            int h = movie.getDuration() / 60;
-            int m = movie.getDuration() % 60;
-            String duration = h + "h " + m + "m";
-            String[] tags = movie.getGenre().split(", ");
-            cards.add(createCard(movie.getTitle(), duration + " • English", "8.5", tags, UIConstants.PRIMARY));
-        }
+        populateCards("");
 
         JScrollPane scroll = new JScrollPane(cards, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -58,7 +59,28 @@ public class MovieBrowsingPanel extends JPanel {
         return scroll;
     }
 
-    private JPanel createCard(String titleText, String metaText, String score, String[] tags, Color accent) {
+    public void filterMovies(String query) {
+        populateCards(query);
+    }
+
+    private void populateCards(String query) {
+        cards.removeAll();
+        String q = query.toLowerCase();
+        List<Movie> movies = ServiceContext.getInstance().getMovieService().getAllMovies();
+        for (Movie movie : movies) {
+            if (movie.getTitle().toLowerCase().contains(q) || movie.getGenre().toLowerCase().contains(q)) {
+                int h = movie.getDuration() / 60;
+                int m = movie.getDuration() % 60;
+                String duration = h + "h " + m + "m";
+                String[] tags = movie.getGenre().split(", ");
+                cards.add(createCard(movie.getTitle(), duration + " • English", "8.5", tags, UIConstants.PRIMARY, movie.getImagePath()));
+            }
+        }
+        cards.revalidate();
+        cards.repaint();
+    }
+
+    private JPanel createCard(String titleText, String metaText, String score, String[] tags, Color accent, String imagePath) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);
         card.setBackground(UIConstants.SURFACE);
@@ -68,10 +90,21 @@ public class MovieBrowsingPanel extends JPanel {
         ));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        JPanel image = new JPanel();
+        JPanel image = new JPanel(new BorderLayout());
         image.setPreferredSize(new Dimension(0, 220));
         image.setBackground(UIConstants.BORDER);
         image.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+        
+        if (imagePath != null && !imagePath.isEmpty()) {
+            try {
+                ImageIcon icon = new ImageIcon(imagePath);
+                Image scaled = icon.getImage().getScaledInstance(300, 220, Image.SCALE_SMOOTH);
+                JLabel imgLabel = new JLabel(new ImageIcon(scaled));
+                imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                image.add(imgLabel, BorderLayout.CENTER);
+            } catch (Exception ignored) {
+            }
+        }
 
         JLabel title = new JLabel(titleText);
         title.setForeground(UIConstants.TEXT);
