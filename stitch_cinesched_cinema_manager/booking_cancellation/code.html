@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;900&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0F0F0F;
+            color: #ffdad5;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-panel {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#5e3f3b",
+                        "primary-container": "#e50914",
+                        "surface-container": "#2e1a18",
+                        "primary": "#ffb4aa",
+                        "secondary-container": "#464747",
+                        "surface-container-highest": "#462f2c",
+                        "inverse-primary": "#c0000c",
+                        "tertiary-container": "#0072d7",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "surface-variant": "#462f2c",
+                        "surface-container-lowest": "#1a0908",
+                        "on-tertiary-fixed-variant": "#004689",
+                        "secondary-fixed": "#e4e2e2",
+                        "surface-dim": "#200e0c",
+                        "on-secondary": "#303031",
+                        "on-background": "#ffdad5",
+                        "on-secondary-fixed-variant": "#464747",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#a7c8ff",
+                        "on-tertiary-container": "#f8f9ff",
+                        "surface-bright": "#4a3330",
+                        "surface": "#200e0c",
+                        "on-primary-container": "#fff7f6",
+                        "outline": "#af8782",
+                        "on-tertiary-fixed": "#001b3c",
+                        "surface-tint": "#ffb4aa",
+                        "surface-container-low": "#2a1614",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#e9bcb6",
+                        "tertiary-fixed": "#d5e3ff",
+                        "inverse-surface": "#ffdad5",
+                        "secondary": "#c7c6c6",
+                        "on-surface": "#ffdad5",
+                        "error-container": "#93000a",
+                        "on-primary": "#690003",
+                        "on-secondary-container": "#b6b5b5",
+                        "on-tertiary": "#003061",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "inverse-on-surface": "#412b28",
+                        "on-primary-fixed-variant": "#930007",
+                        "tertiary": "#a7c8ff",
+                        "background": "#200e0c",
+                        "surface-container-high": "#3a2522",
+                        "primary-fixed": "#ffdad5",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#410001"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-padding": "32px",
+                        "gutter": "24px",
+                        "sidebar-width": "280px",
+                        "section-gap": "48px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Be Vietnam Pro"],
+                        "label-caps": ["Inter"],
+                        "h1": ["Be Vietnam Pro"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Be Vietnam Pro"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "h1": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#0F0F0F]/80 backdrop-blur-md border-b border-[#1A1A1A] flex justify-between items-center px-8 py-4 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-black text-[#E50914] font-h1">CineReserve</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-white/70 hover:text-white font-['Be_Vietnam_Pro'] font-semibold transition-colors" href="#">Now Playing</a>
+<a class="text-white/70 hover:text-white font-['Be_Vietnam_Pro'] font-semibold transition-colors" href="#">Coming Soon</a>
+<a class="text-white/70 hover:text-white font-['Be_Vietnam_Pro'] font-semibold transition-colors" href="#">Offers</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-white/70 hover:text-white transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-white/70 hover:text-white transition-colors" data-icon="account_circle">account_circle</button>
+<button class="bg-primary-container text-white px-6 py-2 rounded-lg font-['Be_Vietnam_Pro'] font-semibold hover:bg-inverse-primary transition-colors">Login</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-8 max-w-7xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Booking Summary Section (Col 1-8) -->
+<section class="lg:col-span-8 space-y-unit">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-background">Booking Successful!</h1>
+</div>
+<!-- Main Confirmation Card -->
+<div class="bg-[#1A1A1A] rounded-xl overflow-hidden shadow-[20px_0_40px_rgba(0,0,0,0.4)] border border-[#2A2A2A]">
+<div class="flex flex-col md:flex-row">
+<!-- Movie Poster Side -->
+<div class="w-full md:w-1/3 aspect-[2/3] relative">
+<img alt="Movie Poster" class="w-full h-full object-cover" data-alt="A cinematic and moody movie poster featuring high-contrast shadows and deep charcoal tones. The scene depicts a futuristic noir cityscape illuminated by vibrant red neon signs reflecting off wet pavement. This dramatic visual style aligns with a premium theater booking application, utilizing a palette of deep blacks, slate greys, and intense cinematic red accents for a luxury atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSznC0w-UxiaDAHE9eSPl9wClMQEFIzrnawXaDAi40zpLiPt7riwr977HKuuNnCA_V2pw_wekH92eOiCaqb2wRbilqGkZIJOF-Wm9i_Uf8PjubSPd1Z0Rd-MXSSD7SN4NAd4fyLGN4YgQjNrA-8q-P39tRAJQhbVZfuhvKoEUHbCUPzklzn2WMS-aS5FJovFb847lpeK2_pau3LMaaxzOUuDl7kp_mJnQmz4JQ-ocdzj_dwT8a2g2uUh08bPhYiENZ5LoML355VNQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] to-transparent"></div>
+</div>
+<!-- Details Side -->
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label-caps text-label-caps text-primary-container mb-2 block">CONFIRMED MOVIE</span>
+<h2 class="font-h2 text-h2 text-on-background">Neon Horizon</h2>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-secondary mb-2 block">BOOKING ID</span>
+<span class="font-body-lg text-body-lg text-on-background font-bold">#CX-9821</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-y-6 mt-8">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="schedule">schedule</span>
+<div>
+<p class="font-label-caps text-label-caps text-secondary">TIME</p>
+<p class="font-body-md text-body-md text-on-background">Today, 08:30 PM</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="theater_comedy">theater_comedy</span>
+<div>
+<p class="font-label-caps text-label-caps text-secondary">THEATER</p>
+<p class="font-body-md text-body-md text-on-background">Grand Cinema, Hall 04</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="event_seat">event_seat</span>
+<div>
+<p class="font-label-caps text-label-caps text-secondary">SELECTED SEATS</p>
+<p class="font-body-md text-body-md text-on-background">G12, G13, G14</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="payments">payments</span>
+<div>
+<p class="font-label-caps text-label-caps text-secondary">TOTAL PRICE</p>
+<p class="font-body-md text-body-md text-primary-container font-bold">$42.50</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-[#2A2A2A] flex gap-4">
+<button class="flex-1 bg-primary-container text-white py-4 rounded-lg font-h3 text-body-md flex items-center justify-center gap-2 hover:bg-inverse-primary transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                                    Download Ticket
+                                </button>
+<button class="flex-1 border border-outline-variant text-on-surface py-4 rounded-lg font-h3 text-body-md flex items-center justify-center gap-2 hover:bg-[#2A2A2A] transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+                                    Share Trip
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Success Message Ticker -->
+<div class="bg-surface-container-low p-4 rounded-lg border border-[#2A2A2A] flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="info">info</span>
+<p class="font-body-md text-secondary text-sm">A confirmation email has been sent to your registered address with the QR code for entry.</p>
+</div>
+</section>
+<!-- Cancel Section (Col 9-12) -->
+<aside class="lg:col-span-4 space-y-gutter">
+<div class="bg-[#1A1A1A] p-8 rounded-xl border border-[#2A2A2A] shadow-[20px_0_40px_rgba(0,0,0,0.4)]">
+<h3 class="font-h3 text-h3 text-on-background mb-6">Manage Booking</h3>
+<p class="font-body-md text-secondary mb-8">Need to make changes? You can cancel your reservation up to 2 hours before the showtime.</p>
+<div class="space-y-6">
+<div class="group">
+<label class="font-label-caps text-label-caps text-secondary mb-2 block transition-colors group-focus-within:text-primary-container" for="cancel-id">Enter Booking ID to Cancel</label>
+<input class="w-full bg-[#121212] border border-[#2A2A2A] rounded-lg p-4 text-on-background font-body-md focus:outline-none focus:border-primary-container transition-all" id="cancel-id" placeholder="e.g. #CX-9821" type="text"/>
+</div>
+<button class="w-full border border-outline-variant text-on-surface py-4 rounded-lg font-h3 text-body-md flex items-center justify-center gap-2 hover:bg-error-container/20 hover:text-error hover:border-error transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+                            Cancel Booking
+                        </button>
+<p class="text-center font-label-caps text-[10px] text-outline-variant uppercase">Refunds are processed within 3-5 business days</p>
+</div>
+</div>
+<!-- Support Card -->
+<div class="bg-surface-container-highest p-6 rounded-xl border border-outline-variant/30 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-on-background/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-background" data-icon="support_agent">support_agent</span>
+</div>
+<div>
+<p class="font-body-md text-on-background font-bold">Need Help?</p>
+<p class="text-sm text-secondary">Contact our 24/7 concierge</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-[#1A1A1A] border-t border-[#2A2A2A] shadow-[0_-4px_20px_rgba(0,0,0,0.5)] rounded-t-2xl">
+<div class="flex flex-col items-center justify-center text-gray-500 active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="text-[10px] font-bold uppercase">Browse</span>
+</div>
+<div class="flex flex-col items-center justify-center text-gray-500 active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-[10px] font-bold uppercase">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#E50914] scale-110 active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="local_activity" style="font-variation-settings: 'FILL' 1;">local_activity</span>
+<span class="text-[10px] font-bold uppercase">My Tickets</span>
+</div>
+<div class="flex flex-col items-center justify-center text-gray-500 active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold uppercase">Profile</span>
+</div>
+</nav>
+</body></html>

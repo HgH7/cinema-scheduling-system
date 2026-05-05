@@ -1,0 +1,119 @@
+package ui;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class MovieBrowsingPanel extends JPanel {
+    public MovieBrowsingPanel() {
+        setOpaque(true);
+        setBackground(UIConstants.BACKGROUND);
+        setLayout(new BorderLayout(0, 18));
+        setBorder(new EmptyBorder(24, 24, 24, 24));
+
+        add(createHeader(), BorderLayout.NORTH);
+        add(createMovieGrid(), BorderLayout.CENTER);
+    }
+
+    private JPanel createHeader() {
+        JPanel header = new JPanel(new BorderLayout(0, 8));
+        header.setOpaque(false);
+
+        JLabel title = new JLabel("Now Playing");
+        title.setForeground(UIConstants.TEXT);
+        title.setFont(UIConstants.FONT_TITLE);
+
+        JLabel subtitle = new JLabel("Explore the latest cinematic masterpieces currently screening.");
+        subtitle.setForeground(UIConstants.TEXT_MUTED);
+        subtitle.setFont(UIConstants.FONT_REGULAR);
+
+        header.add(title, BorderLayout.NORTH);
+        header.add(subtitle, BorderLayout.SOUTH);
+        return header;
+    }
+
+    private JScrollPane createMovieGrid() {
+        JPanel cards = new JPanel(new GridLayout(0, 3, 20, 20));
+        cards.setOpaque(false);
+
+        cards.add(createCard("Neon Horizon", "2h 14m • English", "8.9", new String[]{"SCI-FI", "ACTION"}, UIConstants.PRIMARY));
+        cards.add(createCard("Last Encore", "1h 56m • French", "9.2", new String[]{"DRAMA", "MUSICAL"}, new Color(0xffd54f)));
+        cards.add(createCard("Red Velocity", "2h 05m • English", "8.5", new String[]{"THRILLER", "RACING"}, UIConstants.PRIMARY));
+        cards.add(createCard("Glow Runners", "1h 42m • English", "7.8", new String[]{"ANIMATION", "FANTASY"}, new Color(0x76d1ff)));
+
+        JScrollPane scroll = new JScrollPane(cards, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        return scroll;
+    }
+
+    private JPanel createCard(String titleText, String metaText, String score, String[] tags, Color accent) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setOpaque(true);
+        card.setBackground(UIConstants.SURFACE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIConstants.BORDER),
+                new EmptyBorder(16, 16, 16, 16)
+        ));
+        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        JPanel image = new JPanel();
+        image.setPreferredSize(new Dimension(0, 220));
+        image.setBackground(UIConstants.BORDER);
+        image.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+
+        JLabel title = new JLabel(titleText);
+        title.setForeground(UIConstants.TEXT);
+        title.setFont(UIConstants.FONT_SEMIBOLD);
+
+        JLabel meta = new JLabel(metaText);
+        meta.setForeground(UIConstants.TEXT_MUTED);
+        meta.setFont(UIConstants.FONT_REGULAR);
+
+        JLabel scoreLabel = new JLabel(score);
+        scoreLabel.setForeground(accent);
+        scoreLabel.setFont(UIConstants.FONT_SEMIBOLD);
+
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+        top.add(title, BorderLayout.WEST);
+        top.add(scoreLabel, BorderLayout.EAST);
+
+        JPanel tagsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        tagsPanel.setOpaque(false);
+        for (String tag : tags) {
+            JLabel tagLabel = new JLabel(tag);
+            tagLabel.setOpaque(true);
+            tagLabel.setBackground(UIConstants.SURFACE_ALT);
+            tagLabel.setForeground(UIConstants.TEXT_MUTED);
+            tagLabel.setFont(UIConstants.FONT_REGULAR);
+            tagLabel.setBorder(new EmptyBorder(4, 8, 4, 8));
+            tagsPanel.add(tagLabel);
+        }
+
+        JPanel textPanel = new JPanel();
+        textPanel.setOpaque(false);
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+        textPanel.add(top);
+        textPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+        textPanel.add(meta);
+        textPanel.add(Box.createRigidArea(new Dimension(0, 12)));
+        textPanel.add(tagsPanel);
+
+        card.add(image, BorderLayout.CENTER);
+        card.add(textPanel, BorderLayout.SOUTH);
+
+        card.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new SeatSelectionUI(titleText).setVisible(true);
+            }
+        });
+
+        return card;
+    }
+}

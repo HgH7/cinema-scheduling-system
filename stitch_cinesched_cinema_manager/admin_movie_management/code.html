@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;900&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0F0F0F;
+            color: #ffdad5;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#5e3f3b",
+                        "primary-container": "#e50914",
+                        "surface-container": "#2e1a18",
+                        "primary": "#ffb4aa",
+                        "secondary-container": "#464747",
+                        "surface-container-highest": "#462f2c",
+                        "inverse-primary": "#c0000c",
+                        "tertiary-container": "#0072d7",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "surface-variant": "#462f2c",
+                        "surface-container-lowest": "#1a0908",
+                        "on-tertiary-fixed-variant": "#004689",
+                        "secondary-fixed": "#e4e2e2",
+                        "surface-dim": "#200e0c",
+                        "on-secondary": "#303031",
+                        "on-background": "#ffdad5",
+                        "on-secondary-fixed-variant": "#464747",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#a7c8ff",
+                        "on-tertiary-container": "#f8f9ff",
+                        "surface-bright": "#4a3330",
+                        "surface": "#200e0c",
+                        "on-primary-container": "#fff7f6",
+                        "outline": "#af8782",
+                        "on-tertiary-fixed": "#001b3c",
+                        "surface-tint": "#ffb4aa",
+                        "surface-container-low": "#2a1614",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#e9bcb6",
+                        "tertiary-fixed": "#d5e3ff",
+                        "inverse-surface": "#ffdad5",
+                        "secondary": "#c7c6c6",
+                        "on-surface": "#ffdad5",
+                        "error-container": "#93000a",
+                        "on-primary": "#690003",
+                        "on-secondary-container": "#b6b5b5",
+                        "on-tertiary": "#003061",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "inverse-on-surface": "#412b28",
+                        "on-primary-fixed-variant": "#930007",
+                        "tertiary": "#a7c8ff",
+                        "background": "#200e0c",
+                        "surface-container-high": "#3a2522",
+                        "primary-fixed": "#ffdad5",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#410001"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-padding": "32px",
+                        "gutter": "24px",
+                        "sidebar-width": "280px",
+                        "section-gap": "48px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Be Vietnam Pro"],
+                        "label-caps": ["Inter"],
+                        "h1": ["Be Vietnam Pro"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Be Vietnam Pro"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "h1": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-body-md bg-background text-on-background">
+<!-- Sidebar Navigation -->
+<aside class="docked fixed left-0 top-0 h-full w-64 border-r border-[#2A2A2A] bg-[#1A1A1A] flex flex-col p-8 shadow-[20px_0_40px_rgba(0,0,0,0.4)] z-40 hidden md:flex">
+<div class="mb-10">
+<span class="text-2xl font-black text-[#E50914] uppercase tracking-tighter">Cinema Admin</span>
+<p class="font-['Be_Vietnam_Pro'] text-sm font-medium tracking-wide text-gray-400 mt-1">Premium Experience</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-white border-l-4 border-[#E50914] bg-[#222222] font-['Be_Vietnam_Pro'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+<span>Movies</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200 font-['Be_Vietnam_Pro'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span>Showtimes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200 font-['Be_Vietnam_Pro'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="theater_comedy">theater_comedy</span>
+<span>Theaters</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200 font-['Be_Vietnam_Pro'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200 font-['Be_Vietnam_Pro'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex items-center gap-3 p-4 bg-[#222222] rounded-xl border border-[#2A2A2A]">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of a senior administrator for a premium movie theater chain. The subject is a well-groomed man in his late 30s wearing a sharp charcoal blazer over a crisp white shirt. The background is a soft-focus interior of a luxurious cinema lobby with warm ambient lighting and hints of cinematic red accents. The image conveys authority, hospitality, and modern professionalism in a high-end entertainment context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdjUt25FEVLDfQ7xwJK31iIgcmTescrLRidogR1mA71IsLFG-S8jOE1q4_FqEkpfyGp7pL8VBNOYQxvQ6BYI8rBKFfKyyHSY7WBk2Up_NrsFQJq3ysBifQh0QzpYtZK86PX_F58Fz1znV_YO5H5ZAjy9wYy34MD3QhC40_w7BcCEvyNq0B4-5j_aU0cVG487-IgAKswd9WkwSE5pnuPEoa23mrwpbgnTzGYs_JFv4J2wv7sLnKvtMQGyw6DRqL3HGzBZf3wvsNhKg"/>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Admin User</p>
+<p class="text-[10px] text-gray-500 truncate">admin@cinereserve.com</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 min-h-screen">
+<!-- Header / Top Bar -->
+<header class="sticky top-0 w-full z-30 flex justify-between items-center px-8 py-4 bg-[#0F0F0F]/80 backdrop-blur-md border-b border-[#1A1A1A]">
+<div class="flex items-center gap-4">
+<h1 class="font-h1 text-h1 text-white">Movie Management</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm" data-icon="search">search</span>
+<input class="bg-[#121212] border-outline-variant/30 text-white rounded-full pl-10 pr-4 py-2 text-sm focus:ring-primary-container focus:border-primary-container w-64 transition-all" placeholder="Search catalog..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-white/70 hover:text-white" data-icon="notifications">notifications</button>
+<button class="bg-primary-container text-white px-6 py-2 rounded-lg font-['Be_Vietnam_Pro'] font-semibold hover:bg-inverse-primary transition-colors active:scale-95 duration-200">
+                        Log out
+                    </button>
+</div>
+</div>
+</header>
+<div class="p-container-padding max-w-7xl mx-auto space-y-section-gap">
+<!-- Management Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left: Form Section -->
+<section class="lg:col-span-4">
+<div class="bg-[#1A1A1A] p-8 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] sticky top-24">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-[#E50914]" data-icon="add_circle">add_circle</span>
+<h2 class="font-h3 text-h3 text-white">Add New Movie</h2>
+</div>
+<form class="space-y-6">
+<div>
+<label class="block text-label-caps font-label-caps text-gray-400 mb-2">Movie Title</label>
+<input class="w-full bg-[#121212] border-[#2A2A2A] text-white rounded-lg p-3 focus:ring-primary-container focus:border-primary-container transition-all" placeholder="e.g. Inception" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-label-caps font-label-caps text-gray-400 mb-2">Duration (min)</label>
+<input class="w-full bg-[#121212] border-[#2A2A2A] text-white rounded-lg p-3 focus:ring-primary-container focus:border-primary-container transition-all" placeholder="120" type="number"/>
+</div>
+<div>
+<label class="block text-label-caps font-label-caps text-gray-400 mb-2">Genre</label>
+<select class="w-full bg-[#121212] border-[#2A2A2A] text-white rounded-lg p-3 focus:ring-primary-container focus:border-primary-container transition-all">
+<option>Action</option>
+<option>Drama</option>
+<option>Sci-Fi</option>
+<option>Horror</option>
+<option>Comedy</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block text-label-caps font-label-caps text-gray-400 mb-2">Poster Preview</label>
+<div class="border-2 border-dashed border-[#2A2A2A] rounded-xl h-48 flex flex-col items-center justify-center gap-2 text-gray-500 hover:border-[#E50914] hover:text-[#E50914] cursor-pointer transition-all">
+<span class="material-symbols-outlined text-3xl" data-icon="cloud_upload">cloud_upload</span>
+<span class="text-xs font-bold uppercase tracking-widest">Upload Cover Art</span>
+</div>
+</div>
+<button class="w-full bg-[#E50914] text-white py-4 rounded-lg font-['Be_Vietnam_Pro'] font-bold tracking-wider hover:bg-inverse-primary transition-all active:scale-95 flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined text-lg" data-icon="save">save</span>
+                                Add to Library
+                            </button>
+</form>
+</div>
+</section>
+<!-- Right: Table Section -->
+<section class="lg:col-span-8">
+<div class="bg-[#1A1A1A] rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+<div class="px-8 py-6 border-b border-[#2A2A2A] flex justify-between items-center">
+<h2 class="font-h3 text-h3 text-white">Current Listings</h2>
+<div class="flex gap-2">
+<button class="p-2 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="sort">sort</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-[#121212]">
+<tr>
+<th class="px-8 py-4 text-label-caps font-label-caps text-gray-400">Movie</th>
+<th class="px-8 py-4 text-label-caps font-label-caps text-gray-400">Duration</th>
+<th class="px-8 py-4 text-label-caps font-label-caps text-gray-400">Genre</th>
+<th class="px-8 py-4 text-label-caps font-label-caps text-gray-400 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#2A2A2A]">
+<tr class="hover:bg-[#222222] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded overflow-hidden flex-shrink-0">
+<img alt="Movie Thumbnail" class="w-full h-full object-cover" data-alt="A stylized movie poster thumbnail for a dark cinematic thriller. The artwork features a silhouette of a lone figure under a single neon red streetlamp in a rain-slicked city alley. Deep charcoal and slate tones dominate the composition, with vibrant red light reflecting off the wet pavement. The overall mood is tense and cinematic, perfectly fitting a high-end movie management dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1z0S9YYvNS4c8rDZM256ZRHxxi5_D9fQhjLF9ofgyLpVaiuoM_KYz8-a5MnbbHufxivQy13OYB0lwoPVMC3dV6SSL1FVmH_dcqwWLxQCSRh_1u-qYfX9otB0U_-wuxsCr0wBbwBiNWhNe0CVadRm5AuXt1OwdnXREwb3kowkJQgRsbZ4CZZL2_M31osURnVnAzkEbhXR04EaPW-yn6iz_tgKztu7NxYIXIdjYHuOrKDvvL6KMlFAXePXpE6lM0ouIpJr4ECZsu7Q"/>
+</div>
+<div>
+<p class="font-semibold text-white">The Midnight Protocol</p>
+<p class="text-xs text-gray-500">Released: Oct 2023</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-gray-300">142 min</td>
+<td class="px-8 py-5">
+<span class="bg-[#2A2A2A] text-gray-300 text-[10px] font-bold uppercase px-3 py-1 rounded-full">Sci-Fi</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-gray-500 hover:text-[#E50914] transition-colors group-hover:scale-110">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-[#222222] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded overflow-hidden flex-shrink-0">
+<img alt="Movie Thumbnail" class="w-full h-full object-cover" data-alt="A high-contrast cinematic movie poster thumbnail depicting a minimalist desert landscape at dusk. The sky is a deep velvet black, and a single, bright cinematic red light shines from a distant canyon. The style is modern and architectural, utilizing negative space and tonal layering to create a sense of mystery and epic scale. The image integrates seamlessly with a dark, premium UI design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJuKppwx0C1X6_ayA2Yx7TohEJKxQWLd8d0uiwU6CpSYLj0Sz-tXbrv7_p3e7IU6v2gjw2iu6L_OolzzIfldJMo9iNZVSTNmDYTCZ60PUqSo7FUIZXLyAOdJ65ZKtssTvNI-Gvh3CjBeRZIkULsn9hjyAQFCZQYN3RT26nXyo_YwFMGvZuDPBLL_t3Mu1bcjEvoVXDMYqRvWyraASEgjnfXGtHix6Ak3swMSjukc30LqS0yoVHsQRJ5q6NRsUiyKL53uc0QdHlv8Y"/>
+</div>
+<div>
+<p class="font-semibold text-white">Dune: Part Two</p>
+<p class="text-xs text-gray-500">Released: Mar 2024</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-gray-300">166 min</td>
+<td class="px-8 py-5">
+<span class="bg-[#2A2A2A] text-gray-300 text-[10px] font-bold uppercase px-3 py-1 rounded-full">Adventure</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-gray-500 hover:text-[#E50914] transition-colors group-hover:scale-110">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-[#222222] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded overflow-hidden flex-shrink-0">
+<img alt="Movie Thumbnail" class="w-full h-full object-cover" data-alt="A striking digital artwork for an action-packed movie poster thumbnail. It features abstract streaks of motion-blurred lights in electric red and cool slate grey against a pitch-black background. The composition is dynamic and aggressive, suggesting high speed and high stakes. The lighting is dramatic and moody, reflecting a premium, cinema-focused digital interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChqTHdvbeTJKnbGne_IUTAV6gOJ8A9JYN1p9SqwCwv352hs2eS-xzpL-KtU2PkDrBviaQBGNy0fN45jrpV5rS6eqS1TORBn87qjhbp8l-OMKmf-hIPZbtK64gm5DtvnFKJGE3bvYfSJRSObA-5lnZrA1j41kig7M2-MaE6mZbQW_c4luRrtkjtDOj7HY1TdgrT6XKabmIKzTFO-lYVHa1ob-gVgfCeVZ5FGn3lIeWt-dPsn-nCgkx0kGUfuCwgzg-awataN5PSU5c"/>
+</div>
+<div>
+<p class="font-semibold text-white">Velocity X</p>
+<p class="text-xs text-gray-500">Released: Dec 2023</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-gray-300">118 min</td>
+<td class="px-8 py-5">
+<span class="bg-[#2A2A2A] text-gray-300 text-[10px] font-bold uppercase px-3 py-1 rounded-full">Action</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-gray-500 hover:text-[#E50914] transition-colors group-hover:scale-110">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-[#222222] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded overflow-hidden flex-shrink-0">
+<img alt="Movie Thumbnail" class="w-full h-full object-cover" data-alt="A poetic and moody movie poster thumbnail for a cinematic drama. The image shows a close-up of a vintage lens flare across a deep dark mahogany surface, with soft glowing red dust motes floating in a single beam of light. The aesthetic is nostalgic yet refined, focusing on texture and lighting to evoke emotion, keeping with the theater-inspired design language of the dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJQx93_GrT-PIKjLo96YR4LbUfjOsyw9WCADwjE3UaSWtrdgVkDjk2MRAflArbz6EpzJq3h1TsioNMsk2Tcc2sh-L6LwL7zUQKS5Acu5oLFW9DEAfG3WClYgdnhuBKtrXsa8PQuD5eyvJXaT_nsuRTLN6f3k0GEqMQRll-DBS906IWrVc9uYoCPCMxsHTH6WeeM-Jglp2CAQA4P0BvdwdC3EbuIkZwk6kDZeDFuRve-Yu-ChZ2ef2XwtN10zUgET-N2OViIdTZEs4"/>
+</div>
+<div>
+<p class="font-semibold text-white">Echoes of Silence</p>
+<p class="text-xs text-gray-500">Released: Jan 2024</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-gray-300">95 min</td>
+<td class="px-8 py-5">
+<span class="bg-[#2A2A2A] text-gray-300 text-[10px] font-bold uppercase px-3 py-1 rounded-full">Drama</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-gray-500 hover:text-[#E50914] transition-colors group-hover:scale-110">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-4 bg-[#121212] flex items-center justify-between">
+<span class="text-xs text-gray-500">Showing 4 of 124 movies</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded border border-[#2A2A2A] text-xs text-gray-400 hover:bg-[#2A2A2A]">Prev</button>
+<button class="px-3 py-1 rounded border border-[#2A2A2A] text-xs text-gray-400 hover:bg-[#2A2A2A]">Next</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-[#1A1A1A] flex justify-around items-center h-16 pb-safe border-t border-[#2A2A2A] shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+<button class="flex flex-col items-center justify-center text-[#E50914] active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="text-[10px] font-bold uppercase mt-1">Browse</span>
+</button>
+<button class="flex flex-col items-center justify-center text-gray-500 active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-[10px] font-bold uppercase mt-1">Search</span>
+</button>
+<button class="flex flex-col items-center justify-center text-gray-500 active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="local_activity">local_activity</span>
+<span class="text-[10px] font-bold uppercase mt-1">My Tickets</span>
+</button>
+<button class="flex flex-col items-center justify-center text-gray-500 active:bg-[#2A2A2A] transition-all">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold uppercase mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

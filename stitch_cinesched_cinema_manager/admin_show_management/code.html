@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#5e3f3b",
+                        "primary-container": "#e50914",
+                        "surface-container": "#2e1a18",
+                        "primary": "#ffb4aa",
+                        "secondary-container": "#464747",
+                        "surface-container-highest": "#462f2c",
+                        "inverse-primary": "#c0000c",
+                        "tertiary-container": "#0072d7",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "surface-variant": "#462f2c",
+                        "surface-container-lowest": "#1a0908",
+                        "on-tertiary-fixed-variant": "#004689",
+                        "secondary-fixed": "#e4e2e2",
+                        "surface-dim": "#200e0c",
+                        "on-secondary": "#303031",
+                        "on-background": "#ffdad5",
+                        "on-secondary-fixed-variant": "#464747",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#a7c8ff",
+                        "on-tertiary-container": "#f8f9ff",
+                        "surface-bright": "#4a3330",
+                        "surface": "#200e0c",
+                        "on-primary-container": "#fff7f6",
+                        "outline": "#af8782",
+                        "on-tertiary-fixed": "#001b3c",
+                        "surface-tint": "#ffb4aa",
+                        "surface-container-low": "#2a1614",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#e9bcb6",
+                        "tertiary-fixed": "#d5e3ff",
+                        "inverse-surface": "#ffdad5",
+                        "secondary": "#c7c6c6",
+                        "on-surface": "#ffdad5",
+                        "error-container": "#93000a",
+                        "on-primary": "#690003",
+                        "on-secondary-container": "#b6b5b5",
+                        "on-tertiary": "#003061",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "inverse-on-surface": "#412b28",
+                        "on-primary-fixed-variant": "#930007",
+                        "tertiary": "#a7c8ff",
+                        "background": "#200e0c",
+                        "surface-container-high": "#3a2522",
+                        "primary-fixed": "#ffdad5",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#410001"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-padding": "32px",
+                        "gutter": "24px",
+                        "sidebar-width": "280px",
+                        "section-gap": "48px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Be Vietnam Pro"],
+                        "label-caps": ["Inter"],
+                        "h1": ["Be Vietnam Pro"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Be Vietnam Pro"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "h1": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F0F0F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2A2A;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3A3A3A;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#1A1A1A] border-r border-[#2A2A2A] shadow-[20px_0_40px_rgba(0,0,0,0.4)] z-50 flex flex-col p-8 font-['Be_Vietnam_Pro'] text-sm font-medium tracking-wide">
+<div class="mb-10">
+<h1 class="text-2xl font-black text-[#E50914] uppercase tracking-tighter">Cinema Admin</h1>
+<p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-1">Premium Experience</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+<span>Movies</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-white border-l-4 border-[#E50914] bg-[#222222] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span>Showtimes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="theater_comedy">theater_comedy</span>
+<span>Theaters</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<div class="pt-8 mt-8 border-t border-[#2A2A2A]">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:text-white hover:bg-[#222222] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</nav>
+<div class="mt-auto pt-6 flex items-center gap-3 border-t border-[#2A2A2A]">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest">
+<img alt="User profile" data-alt="A professional headshot of a cinema administrator in a modern office environment. The person is smiling warmly, wearing a crisp dark blazer. The lighting is cinematic with soft rim highlights, reflecting the premium theater aesthetic of the brand's dark charcoal and red palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnLcp_LuO-BNztveYJ6-xbp83w1JnEnDFolIeU7mbQpsYLxxXAPcF_Dj2kRa1LgB4h5ei8i8B14ffTeRlDK5ioWuk6C_nCnSidRoRkBy46FMfd87GTWI334iKsXoFd5mPjncsbg7pAIMdqD-KqubXeeBK5BHyI9d7ho4M6qvzTKrDvSUQEJpAxoPuPY0pCY3ChnyxgnO1JFyzf5ANLU2Jxv1qi7kPQvrVQ1-q4K8HPqRA3BfpTRpGLcrgIRcEzQjak57RUhOZeHo4"/>
+</div>
+<div class="flex flex-col">
+<span class="text-white font-semibold">Admin User</span>
+<span class="text-xs text-gray-500">Super Admin</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen p-container-padding pb-section-gap">
+<!-- Header -->
+<header class="flex justify-between items-end mb-12">
+<div>
+<span class="text-primary-container font-label-caps uppercase tracking-widest text-[10px]">Management Console</span>
+<h2 class="font-h1 text-h1 text-on-background mt-2">Show Management</h2>
+</div>
+<div class="flex gap-4">
+<button class="bg-[#1A1A1A] text-white px-6 py-3 rounded-xl border border-[#2A2A2A] font-semibold text-sm hover:bg-[#222222] transition-all duration-200 active:scale-95">
+                    Export Schedule
+                </button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Create New Show Form (Glassmorphism / Tonal Layering) -->
+<section class="col-span-12 lg:col-span-4 space-y-6">
+<div class="bg-[#1A1A1A] p-8 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] border border-[#2A2A2A]">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</div>
+<h3 class="font-h3 text-h3 text-white">Create New Show</h3>
+</div>
+<form class="space-y-6">
+<div class="space-y-2">
+<label class="font-label-caps text-gray-400 text-[11px] ml-1">Select Movie</label>
+<div class="relative">
+<select class="w-full bg-[#121212] border border-[#2A2A2A] rounded-xl py-3.5 px-4 text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container appearance-none transition-all outline-none">
+<option>The Midnight Odyssey</option>
+<option>Neon Horizons</option>
+<option>Shadow of the Peak</option>
+<option>Cinema Paradiso (Classic)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-gray-500 pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-gray-400 text-[11px] ml-1">Auditorium Screen</label>
+<div class="grid grid-cols-2 gap-3">
+<label class="cursor-pointer">
+<input checked="" class="hidden peer" name="screen" type="radio"/>
+<div class="flex items-center justify-center py-3 rounded-xl border border-[#2A2A2A] bg-[#121212] text-gray-400 peer-checked:bg-primary-container peer-checked:text-white peer-checked:border-primary-container transition-all">
+                                        Screen 1
+                                    </div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden peer" name="screen" type="radio"/>
+<div class="flex items-center justify-center py-3 rounded-xl border border-[#2A2A2A] bg-[#121212] text-gray-400 peer-checked:bg-primary-container peer-checked:text-white peer-checked:border-primary-container transition-all">
+                                        Screen 2
+                                    </div>
+</label>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-gray-400 text-[11px] ml-1">Start Time</label>
+<div class="relative">
+<input class="w-full bg-[#121212] border border-[#2A2A2A] rounded-xl py-3.5 px-4 text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" type="time"/>
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-gray-500 pointer-events-none" data-icon="schedule">schedule</span>
+</div>
+</div>
+<button class="w-full bg-primary-container text-white font-bold py-4 rounded-xl shadow-[0_8px_20px_rgba(229,9,20,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4" type="submit">
+                            Schedule Show
+                        </button>
+</form>
+</div>
+<!-- Secondary Info Card -->
+<div class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/20">
+<p class="text-xs text-on-surface-variant flex gap-2">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="info">info</span>
+                        Changes to showtimes will notify all registered ticket holders automatically via email.
+                    </p>
+</div>
+</section>
+<!-- Existing Shows Table -->
+<section class="col-span-12 lg:col-span-8">
+<div class="bg-[#1A1A1A] rounded-2xl border border-[#2A2A2A] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+<div class="p-8 border-b border-[#2A2A2A] flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-white">Existing Shows</h3>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg hover:bg-[#222222] text-gray-400">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-[#222222] text-gray-400">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-[#121212] font-label-caps text-[10px] text-gray-500 uppercase tracking-widest">
+<th class="px-8 py-5">Movie</th>
+<th class="px-8 py-5">Screen</th>
+<th class="px-8 py-5">Time</th>
+<th class="px-8 py-5">Status</th>
+<th class="px-8 py-5 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#2A2A2A]">
+<!-- Table Row 1 -->
+<tr class="group hover:bg-[#222222] transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded-md bg-[#2A2A2A] overflow-hidden flex-shrink-0">
+<img alt="Movie poster" data-alt="A moody, high-contrast movie poster for a sci-fi film titled Midnight Odyssey. The image shows a lone silhouette against a vibrant cosmic nebula in shades of deep indigo and neon red. The lighting is cinematic, highlighting the fine texture of a spacesuit and the cold expanse of the universe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ_n8MSRjM6YZw2B_Y4j9rcoH188P5WSQivFY65vXLNkL1DZOzq7qxq-hC8y0uhsM7d-HtKu2zk2Qie9Xzjogv66ukOteXZCdn1Jei1vu4Z1rC3ask1PooI0cGlTQEvGrCkGipd-q2GzNyvbu_t3xAQb77kj_dWZPhI_5NMLsI9QHNLF0pVEJbeSwHk0TCZso_nHJ2dCK0WC3Ng82CEEGst8vWe4RfzUOk0ZPYNFqCfA6-Si_HbnB5Mea5gRfXa2no1V7suoEba30"/>
+</div>
+<div>
+<div class="font-bold text-white text-base">The Midnight Odyssey</div>
+<div class="text-xs text-gray-500">Action / Sci-Fi • 2h 15m</div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="text-on-surface font-medium">Screen 1</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex flex-col">
+<span class="text-white font-semibold">18:30</span>
+<span class="text-[10px] text-gray-500 uppercase tracking-tighter">Today, Oct 24</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-wide border border-emerald-500/20">Active</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Table Row 2 -->
+<tr class="group hover:bg-[#222222] transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded-md bg-[#2A2A2A] overflow-hidden flex-shrink-0">
+<img alt="Movie poster" data-alt="An abstract, artistic movie poster for Neon Horizons. It features a sleek cityscape reflected in rain-slicked pavement at night, saturated with neon pink and cyan lights. The aesthetic is vaporwave-inspired, minimalist yet highly vibrant, evoking a futuristic metropolitan atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA84A5tsn-i02Kv9TuJQB3z0iREKW2JYHJMP7EtRFI_y240D3GsIcpAUb3AYABs6e-hPuaNEikfzgMGS4qXidNqxaiKY2fAMJgUrYCFXrkMKAjINX7dyZLsxpd-WJ_v6q5ak_JLnGWlxtddjxgOCp5u3rArzta90IkvnFHcWU9qYZ8PS2sHp2cZKfx65mDWds7X4CBmepCB4zLl9cuhUi3c694ji1gmC2sCdCfWej7PT1CHHiN5KYg-zBgTqWAaJpBEM4BYkD3K2uk"/>
+</div>
+<div>
+<div class="font-bold text-white text-base">Neon Horizons</div>
+<div class="text-xs text-gray-500">Drama / Thriller • 1h 45m</div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="text-on-surface font-medium">Screen 2</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex flex-col">
+<span class="text-white font-semibold">20:15</span>
+<span class="text-[10px] text-gray-500 uppercase tracking-tighter">Today, Oct 24</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold uppercase tracking-wide border border-amber-500/20">Full</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Table Row 3 -->
+<tr class="group hover:bg-[#222222] transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 rounded-md bg-[#2A2A2A] overflow-hidden flex-shrink-0">
+<img alt="Movie poster" data-alt="A vintage-style film poster for Shadow of the Peak. A snowy mountain summit is captured in dramatic black and white, with deep shadows and sharp, jagged edges. A single golden glow emanates from a distant cabin window, providing the only splash of color in the cold, atmospheric scene." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbsXxV3lKPmQYFddq18-PFu5jOYa-IVbmbDqCTDDeCjVdOSGQYwn2TZRfeMKxh7vLYTMgrsX69EHXdSmsG3Ht5g4OsoHPHQtt83ghzzxm23Sf4akpGgpEUQC4wsgehhEThYdmFTS6gCOQ6lJU_puRQBz-8PXUaoyy_CmOoLM0uiseQ5KdLcvYdenQLYl0MH27vz_Qp01AxxQZAidMngK092hkIAo5uExG1pAu_tzZkICQ6OrXvmD2FrzalXQQnTq-ShzmEQpcRvbU"/>
+</div>
+<div>
+<div class="font-bold text-white text-base">Shadow of the Peak</div>
+<div class="text-xs text-gray-500">Adventure / Mystery • 2h 05m</div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="text-on-surface font-medium">Screen 1</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex flex-col">
+<span class="text-white font-semibold">21:30</span>
+<span class="text-[10px] text-gray-500 uppercase tracking-tighter">Today, Oct 24</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 rounded-full bg-primary-container/10 text-primary-container text-[10px] font-bold uppercase tracking-wide border border-primary-container/20">Cancelled</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="p-6 bg-[#121212] flex items-center justify-between">
+<span class="text-xs text-gray-500">Showing 3 of 24 scheduled shows</span>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center border border-[#2A2A2A] text-gray-500 hover:text-white hover:bg-[#222222] transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-container text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center border border-[#2A2A2A] text-gray-500 hover:text-white hover:bg-[#222222] transition-all text-xs font-bold">2</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center border border-[#2A2A2A] text-gray-500 hover:text-white hover:bg-[#222222] transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Nav for Mobile Screens (Hidden on desktop as per rules) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-[#1A1A1A] border-t border-[#2A2A2A] shadow-[0_-4px_20px_rgba(0,0,0,0.5)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-gray-500" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="text-[10px] font-bold uppercase mt-1">Browse</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-[10px] font-bold uppercase mt-1">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#E50914] scale-110 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="local_activity">local_activity</span>
+<span class="text-[10px] font-bold uppercase mt-1">My Tickets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold uppercase mt-1">Profile</span>
+</a>
+</nav>
+</body></html>
