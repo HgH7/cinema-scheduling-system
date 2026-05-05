@@ -13,6 +13,7 @@ This application simulates a real-world cinema management system where administr
 - **Show Scheduling**: Schedule movie shows on different screens with time conflict detection
 - **Booking Oversight**: View all bookings, cancel bookings, and manage reservations
 - **Sales Analytics**: View ticket sales reports by movie and date
+- **Dashboard**: Analytics summary with movie popularity ranking and key metrics
 
 ### 🍿 User Features
 - **Movie Browsing**: Browse movies in an attractive grid layout with search functionality
@@ -43,7 +44,7 @@ This application simulates a real-world cinema management system where administr
 
 2. **Compile the application**
    ```bash
-   javac -d out src/**/*.java
+   javac -d out src/Main.java src/model/*.java src/service/*.java src/ui/*.java src/exception/*.java src/util/*.java
    ```
 
 3. **Run the application**

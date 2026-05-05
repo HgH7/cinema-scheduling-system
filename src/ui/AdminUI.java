@@ -22,6 +22,7 @@ public class AdminUI extends JFrame {
         contentPanel.add(new AdminShowsPanel(), "shows");
         contentPanel.add(new AdminBookingsPanel(), "bookings");
         contentPanel.add(new AdminSalesPanel(), "sales");
+        contentPanel.add(new DashboardPanel(), "dashboard");
         contentLayout.show(contentPanel, "movies");
 
         setVisible(true);
@@ -49,6 +50,7 @@ public class AdminUI extends JFrame {
         side.add(createSidebarButton("Showtimes", "shows", false));
         side.add(createSidebarButton("Bookings", "bookings", false));
         side.add(createSidebarButton("Sales", "sales", false));
+        side.add(createSidebarButton("Dashboard", "dashboard", false));
         side.add(Box.createVerticalGlue());
 
         return side;

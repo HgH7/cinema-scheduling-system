@@ -1,6 +1,8 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Show {
     private int id;
@@ -10,6 +12,7 @@ public class Show {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private double pricePerSeat;
+    private List<Seat> seats;
 
     public Show(int id, Movie movie, Screen screen, String showTime) {
         this.id = id;
@@ -17,9 +20,10 @@ public class Show {
         this.screen = screen;
         this.showTime = showTime;
         this.pricePerSeat = 10.0;
+        this.seats = cloneSeats(screen);
     }
 
-    public Show(int id, Movie movie, Screen screen, 
+    public Show(int id, Movie movie, Screen screen,
             LocalDateTime startTime, LocalDateTime endTime, double pricePerSeat) {
         this.id = id;
         this.movie = movie;
@@ -27,6 +31,15 @@ public class Show {
         this.startTime = startTime;
         this.endTime = endTime;
         this.pricePerSeat = pricePerSeat;
+        this.seats = cloneSeats(screen);
+    }
+
+    private List<Seat> cloneSeats(Screen screen) {
+        List<Seat> cloned = new ArrayList<>();
+        for (Seat seat : screen.getSeats()) {
+            cloned.add(new Seat(seat.getRow(), seat.getNumber()));
+        }
+        return cloned;
     }
 
     public int getId() {
@@ -86,7 +99,7 @@ public class Show {
     }
 
     public boolean checkAvailability() {
-        for (Seat seat : screen.getSeats()) {
+        for (Seat seat : seats) {
             if (seat.isAvailable()) {
                 return true;
             }
@@ -96,7 +109,7 @@ public class Show {
 
     public int getAvailableSeatsCount() {
         int counter = 0;
-        for (Seat seat : screen.getSeats()) {
+        for (Seat seat : seats) {
             if (seat.isAvailable()) {
                 counter++;
             }
@@ -105,6 +118,11 @@ public class Show {
     }
 
     public Seat getSeat(String row, int col) {
-        return screen.getSeat(row, col);
+        for (Seat seat : seats) {
+            if (seat.getRow().equals(row) && seat.getNumber() == col) {
+                return seat;
+            }
+        }
+        return null;
     }
 }
