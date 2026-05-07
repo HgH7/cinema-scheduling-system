@@ -3,17 +3,17 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class UserUI extends JFrame {
-    public UserUI() {
+public class UserHomeScreen extends JFrame {
+    public UserHomeScreen() {
         super("CineReserve");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1300, 860);
         setLocationRelativeTo(null);
 
         JPanel root = new JPanel(new BorderLayout());
-        root.setBackground(UIConstants.BACKGROUND);
+        root.setBackground(UITheme.BACKGROUND);
 
-        MovieBrowsingPanel browsingPanel = new MovieBrowsingPanel();
+        UserMovieCatalogPanel browsingPanel = new UserMovieCatalogPanel();
         root.add(createTopBar(browsingPanel), BorderLayout.NORTH);
         root.add(browsingPanel, BorderLayout.CENTER);
 
@@ -21,22 +21,22 @@ public class UserUI extends JFrame {
         setVisible(true);
     }
 
-    private JPanel createTopBar(MovieBrowsingPanel browsingPanel) {
+    private JPanel createTopBar(UserMovieCatalogPanel browsingPanel) {
         JPanel bar = new JPanel(new BorderLayout(16, 0));
         bar.setBackground(new Color(0x0f0f0f));
         bar.setBorder(BorderFactory.createEmptyBorder(16, 24, 16, 24));
 
         JLabel logo = new JLabel("CineReserve");
-        logo.setForeground(UIConstants.PRIMARY);
-        logo.setFont(UIConstants.FONT_BOLD);
+        logo.setForeground(UITheme.PRIMARY);
+        logo.setFont(UITheme.FONT_BOLD);
 
         JPanel searchPanel = new JPanel(new BorderLayout());
         searchPanel.setOpaque(false);
         JTextField search = new JTextField();
-        search.setBackground(UIConstants.SURFACE_ALT);
-        search.setForeground(UIConstants.TEXT);
+        search.setBackground(UITheme.SURFACE_ALT);
+        search.setForeground(UITheme.TEXT);
         search.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
         search.setPreferredSize(new Dimension(360, 34));
@@ -73,14 +73,11 @@ public class UserUI extends JFrame {
         actions.setOpaque(false);
         JButton switchMode = new JButton("Switch Mode");
         switchMode.setOpaque(true);
-        switchMode.setBackground(UIConstants.PRIMARY);
-        switchMode.setForeground(Color.WHITE);
-        switchMode.setFont(UIConstants.FONT_SEMIBOLD);
-        switchMode.setFocusPainted(false);
+        UIStyles.stylePrimaryButton(switchMode);
         switchMode.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         switchMode.addActionListener(e -> {
             dispose();
-            new AdminUI();
+            new AdminDashboard();
         });
 
         actions.add(switchMode);

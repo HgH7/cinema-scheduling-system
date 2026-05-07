@@ -9,12 +9,12 @@ import java.util.List;
 import model.Movie;
 import model.Show;
 
-public class MovieBrowsingPanel extends JPanel {
+public class UserMovieCatalogPanel extends JPanel {
     private JPanel cards;
 
-    public MovieBrowsingPanel() {
+    public UserMovieCatalogPanel() {
         setOpaque(true);
-        setBackground(UIConstants.BACKGROUND);
+        setBackground(UITheme.BACKGROUND);
         setLayout(new BorderLayout(0, 18));
         setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -34,12 +34,12 @@ public class MovieBrowsingPanel extends JPanel {
         header.setOpaque(false);
 
         JLabel title = new JLabel("Now Playing");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_TITLE);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_TITLE);
 
         JLabel subtitle = new JLabel("Explore the latest cinematic masterpieces currently screening.");
-        subtitle.setForeground(UIConstants.TEXT_MUTED);
-        subtitle.setFont(UIConstants.FONT_REGULAR);
+        subtitle.setForeground(UITheme.TEXT_MUTED);
+        subtitle.setFont(UITheme.FONT_REGULAR);
 
         header.add(title, BorderLayout.NORTH);
         header.add(subtitle, BorderLayout.SOUTH);
@@ -66,14 +66,14 @@ public class MovieBrowsingPanel extends JPanel {
     private void populateCards(String query) {
         cards.removeAll();
         String q = query.toLowerCase();
-        List<Movie> movies = ServiceContext.getInstance().getMovieService().getAllMovies();
+        List<Movie> movies = ApplicationServices.getInstance().getMovieService().getAllMovies();
         for (Movie movie : movies) {
             if (movie.getTitle().toLowerCase().contains(q) || movie.getGenre().toLowerCase().contains(q)) {
                 int h = movie.getDuration() / 60;
                 int m = movie.getDuration() % 60;
                 String duration = h + "h " + m + "m";
                 String[] tags = movie.getGenre().split(", ");
-                cards.add(createCard(movie.getTitle(), duration + " • English", "8.5", tags, UIConstants.PRIMARY, movie.getImagePath()));
+                cards.add(createCard(movie.getTitle(), duration + " • English", "8.5", tags, UITheme.PRIMARY, movie.getImagePath()));
             }
         }
         cards.revalidate();
@@ -83,17 +83,17 @@ public class MovieBrowsingPanel extends JPanel {
     private JPanel createCard(String titleText, String metaText, String score, String[] tags, Color accent, String imagePath) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);
-        card.setBackground(UIConstants.SURFACE);
+        card.setBackground(UITheme.SURFACE);
         card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(16, 16, 16, 16)
         ));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         JPanel image = new JPanel(new BorderLayout());
         image.setPreferredSize(new Dimension(0, 220));
-        image.setBackground(UIConstants.BORDER);
-        image.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+        image.setBackground(UITheme.BORDER);
+        image.setBorder(BorderFactory.createLineBorder(UITheme.BORDER));
         
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
@@ -107,16 +107,16 @@ public class MovieBrowsingPanel extends JPanel {
         }
 
         JLabel title = new JLabel(titleText);
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_SEMIBOLD);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_SEMIBOLD);
 
         JLabel meta = new JLabel(metaText);
-        meta.setForeground(UIConstants.TEXT_MUTED);
-        meta.setFont(UIConstants.FONT_REGULAR);
+        meta.setForeground(UITheme.TEXT_MUTED);
+        meta.setFont(UITheme.FONT_REGULAR);
 
         JLabel scoreLabel = new JLabel(score);
         scoreLabel.setForeground(accent);
-        scoreLabel.setFont(UIConstants.FONT_SEMIBOLD);
+        scoreLabel.setFont(UITheme.FONT_SEMIBOLD);
 
         JPanel top = new JPanel(new BorderLayout());
         top.setOpaque(false);
@@ -128,9 +128,9 @@ public class MovieBrowsingPanel extends JPanel {
         for (String tag : tags) {
             JLabel tagLabel = new JLabel(tag);
             tagLabel.setOpaque(true);
-            tagLabel.setBackground(UIConstants.SURFACE_ALT);
-            tagLabel.setForeground(UIConstants.TEXT_MUTED);
-            tagLabel.setFont(UIConstants.FONT_REGULAR);
+            tagLabel.setBackground(UITheme.SURFACE_ALT);
+            tagLabel.setForeground(UITheme.TEXT_MUTED);
+            tagLabel.setFont(UITheme.FONT_REGULAR);
             tagLabel.setBorder(new EmptyBorder(4, 8, 4, 8));
             tagsPanel.add(tagLabel);
         }
@@ -151,13 +151,13 @@ public class MovieBrowsingPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Show firstShow = null;
-                for (Show s : ServiceContext.getInstance().getShowService().getAllShows()) {
+                for (Show s : ApplicationServices.getInstance().getShowService().getAllShows()) {
                     if (s.getMovie().getTitle().equals(titleText)) {
                         firstShow = s;
                         break;
                     }
                 }
-                new SeatSelectionUI(firstShow).setVisible(true);
+                new UserSeatSelectionScreen(firstShow).setVisible(true);
             }
         });
 

@@ -3,9 +3,9 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainMenuUI {
+public class AppMainMenu {
     public static void startApplication() {
-        SwingUtilities.invokeLater(() -> new MainMenuUI().createAndShow());
+        SwingUtilities.invokeLater(() -> new AppMainMenu().createAndShow());
     }
 
     private void createAndShow() {
@@ -18,26 +18,26 @@ public class MainMenuUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(960, 680);
         frame.setLocationRelativeTo(null);
-        frame.setBackground(UIConstants.BACKGROUND);
+        frame.setBackground(UITheme.BACKGROUND);
 
         JPanel root = new JPanel(new BorderLayout());
-        root.setBackground(UIConstants.BACKGROUND);
+        root.setBackground(UITheme.BACKGROUND);
         root.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
 
         JPanel content = new JPanel();
         content.setOpaque(true);
-        content.setBackground(UIConstants.SURFACE);
+        content.setBackground(UITheme.SURFACE);
         content.setBorder(BorderFactory.createEmptyBorder(32, 32, 32, 32));
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 
         JLabel title = new JLabel("Cinema Booking System");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_LARGE);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_LARGE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel subtitle = new JLabel("Choose a mode to continue");
-        subtitle.setForeground(UIConstants.TEXT_MUTED);
-        subtitle.setFont(UIConstants.FONT_REGULAR);
+        subtitle.setForeground(UITheme.TEXT_MUTED);
+        subtitle.setFont(UITheme.FONT_REGULAR);
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitle.setBorder(BorderFactory.createEmptyBorder(12, 0, 24, 0));
 
@@ -50,11 +50,11 @@ public class MainMenuUI {
 
         userButton.addActionListener(e -> {
             frame.dispose();
-            new UserUI();
+            new UserHomeScreen();
         });
         adminButton.addActionListener(e -> {
             frame.dispose();
-            new AdminUI();
+            new AdminDashboard();
         });
 
         buttons.add(userButton);
@@ -73,21 +73,21 @@ public class MainMenuUI {
         JButton button = new JButton();
         button.setOpaque(true);
         button.setBorderPainted(false);
-        button.setBackground(UIConstants.SURFACE_ALT);
-        button.setForeground(UIConstants.TEXT);
+        button.setBackground(UITheme.SURFACE_ALT);
+        button.setForeground(UITheme.TEXT);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setLayout(new BorderLayout(10, 10));
         button.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
 
         JLabel label = new JLabel(title);
-        label.setForeground(UIConstants.PRIMARY);
-        label.setFont(UIConstants.FONT_BOLD);
+        label.setForeground(UITheme.PRIMARY);
+        label.setFont(UITheme.FONT_BOLD);
 
         JLabel descriptionLabel = new JLabel("<html><body style='color:#ffdad5; font-family:Sans-Serif; font-size:12px; line-height:1.4;'>" + description + "</body></html>");
-        descriptionLabel.setFont(UIConstants.FONT_REGULAR);
+        descriptionLabel.setFont(UITheme.FONT_REGULAR);
 
         button.add(label, BorderLayout.NORTH);
         button.add(descriptionLabel, BorderLayout.CENTER);

@@ -1,7 +1,5 @@
 package util;
 
-import exception.ValidationException;
-
 /**
  * Utility class for validating user inputs
  * All validation methods throw ValidationException with descriptive messages
@@ -170,6 +168,58 @@ public class InputValidator {
     public static void validateSelection(Object selection) throws ValidationException {
         if (selection == null) {
             throw new ValidationException("Error: Please select a valid option");
+        }
+    }
+
+    /**
+     * Base exception class for Cinema Scheduling System.
+     */
+    public static class CinemaException extends Exception {
+        public CinemaException(String message) {
+            super(message);
+        }
+
+        public CinemaException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    /**
+     * Thrown when user input validation fails.
+     */
+    public static class ValidationException extends CinemaException {
+        public ValidationException(String message) {
+            super(message);
+        }
+
+        public ValidationException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    /**
+     * Thrown when booking operation fails.
+     */
+    public static class BookingException extends CinemaException {
+        public BookingException(String message) {
+            super(message);
+        }
+
+        public BookingException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    /**
+     * Thrown when show scheduling fails.
+     */
+    public static class ShowSchedulingException extends CinemaException {
+        public ShowSchedulingException(String message) {
+            super(message);
+        }
+
+        public ShowSchedulingException(String message, Throwable cause) {
+            super(message, cause);
         }
     }
 }

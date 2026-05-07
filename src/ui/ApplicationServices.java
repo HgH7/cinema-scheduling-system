@@ -6,14 +6,14 @@ import service.BookingService;
 import service.MovieService;
 import service.ShowService;
 
-public class ServiceContext {
-    private static ServiceContext instance;
+public class ApplicationServices {
+    private static ApplicationServices instance;
 
     private final MovieService movieService;
     private final ShowService showService;
     private final BookingService bookingService;
 
-    private ServiceContext() {
+    private ApplicationServices() {
         movieService = new MovieService();
         showService = new ShowService();
         bookingService = new BookingService();
@@ -21,9 +21,9 @@ public class ServiceContext {
         seedData();
     }
 
-    public static synchronized ServiceContext getInstance() {
+    public static synchronized ApplicationServices getInstance() {
         if (instance == null) {
-            instance = new ServiceContext();
+            instance = new ApplicationServices();
         }
         return instance;
     }

@@ -9,15 +9,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-public class AdminSalesPanel extends JPanel {
+public class AdminAnalyticsDashboardPanel extends JPanel {
     private DefaultTableModel movieTableModel;
     private DefaultTableModel dayTableModel;
     private JLabel totalRevenueLabel;
     private JLabel totalTicketsLabel;
+    private JLabel totalBookingsLabel;
+    private JLabel avgPriceLabel;
+    private JLabel topMovieLabel;
+    private JTextArea popularityArea;
 
-    public AdminSalesPanel() {
+    public AdminAnalyticsDashboardPanel() {
         setOpaque(true);
-        setBackground(UIConstants.BACKGROUND);
+        setBackground(UITheme.BACKGROUND);
         setLayout(new BorderLayout(16, 16));
         setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -36,9 +40,9 @@ public class AdminSalesPanel extends JPanel {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
-        JLabel title = new JLabel("Sales Analytics");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_TITLE);
+        JLabel title = new JLabel("Analytics Dashboard");
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_TITLE);
 
         header.add(title, BorderLayout.WEST);
         return header;
@@ -48,21 +52,24 @@ public class AdminSalesPanel extends JPanel {
         JPanel content = new JPanel(new BorderLayout(0, 16));
         content.setOpaque(false);
         content.add(createSummaryPanel(), BorderLayout.NORTH);
-        content.add(createTablesPanel(), BorderLayout.CENTER);
+        content.add(createCenterPanel(), BorderLayout.CENTER);
         return content;
     }
 
     private JPanel createSummaryPanel() {
-        JPanel summary = new JPanel(new GridLayout(1, 2, 16, 0));
+        JPanel summary = new JPanel(new GridLayout(1, 5, 16, 0));
         summary.setOpaque(true);
-        summary.setBackground(UIConstants.SURFACE);
+        summary.setBackground(UITheme.SURFACE);
         summary.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(24, 24, 24, 24)
         ));
 
-        summary.add(createStatCard("Total Revenue", "$0.00", UIConstants.PRIMARY));
-        summary.add(createStatCard("Total Tickets Sold", "0", UIConstants.BORDER));
+        summary.add(createStatCard("Total Revenue", "$0.00", UITheme.PRIMARY));
+        summary.add(createStatCard("Total Tickets Sold", "0", UITheme.BORDER));
+        summary.add(createStatCard("Total Bookings", "0", new Color(0x2f, 0x8f, 0x4d)));
+        summary.add(createStatCard("Avg Price/Booking", "$0.00", new Color(0xf7, 0xc0, 0x25)));
+        summary.add(createStatCard("Top Movie", "N/A", UITheme.PRIMARY_LIGHT));
 
         return summary;
     }
@@ -72,18 +79,23 @@ public class AdminSalesPanel extends JPanel {
         card.setOpaque(false);
 
         JLabel labelText = new JLabel(label);
-        labelText.setForeground(UIConstants.TEXT_MUTED);
-        labelText.setFont(UIConstants.FONT_REGULAR);
+        labelText.setForeground(UITheme.TEXT_MUTED);
+        labelText.setFont(UITheme.FONT_REGULAR);
 
+        JLabel valueText = new JLabel(value);
         if (label.equals("Total Revenue")) {
-            totalRevenueLabel = new JLabel(value);
-        } else {
-            totalTicketsLabel = new JLabel(value);
+            totalRevenueLabel = valueText;
+        } else if (label.equals("Total Tickets Sold")) {
+            totalTicketsLabel = valueText;
+        } else if (label.equals("Total Bookings")) {
+            totalBookingsLabel = valueText;
+        } else if (label.equals("Avg Price/Booking")) {
+            avgPriceLabel = valueText;
+        } else if (label.equals("Top Movie")) {
+            topMovieLabel = valueText;
         }
-
-        JLabel valueText = (label.equals("Total Revenue")) ? totalRevenueLabel : totalTicketsLabel;
         valueText.setForeground(color);
-        valueText.setFont(UIConstants.FONT_LARGE);
+        valueText.setFont(UITheme.FONT_LARGE);
 
         card.add(labelText, BorderLayout.NORTH);
         card.add(valueText, BorderLayout.CENTER);
@@ -91,10 +103,46 @@ public class AdminSalesPanel extends JPanel {
         return card;
     }
 
+    private JPanel createCenterPanel() {
+        JPanel panel = new JPanel(new BorderLayout(0, 16));
+        panel.setOpaque(false);
+
+        panel.add(createPopularityPanel(), BorderLayout.NORTH);
+        panel.add(createTablesPanel(), BorderLayout.CENTER);
+        return panel;
+    }
+
+    private JPanel createPopularityPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setOpaque(true);
+        panel.setBackground(UITheme.SURFACE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UITheme.BORDER),
+                new EmptyBorder(16, 16, 16, 16)
+        ));
+
+        JLabel title = new JLabel("Movie Popularity Ranking");
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_SEMIBOLD);
+        panel.add(title, BorderLayout.NORTH);
+
+        popularityArea = new JTextArea("No booking data available");
+        popularityArea.setOpaque(false);
+        popularityArea.setForeground(UITheme.TEXT);
+        popularityArea.setFont(UITheme.FONT_REGULAR);
+        popularityArea.setEditable(false);
+
+        JScrollPane scroll = new JScrollPane(popularityArea);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        panel.add(scroll, BorderLayout.CENTER);
+        return panel;
+    }
+
     private JPanel createTablesPanel() {
         JPanel panel = new JPanel(new GridLayout(1, 2, 16, 0));
         panel.setOpaque(false);
-
         panel.add(createMovieSalesPanel());
         panel.add(createDaySalesPanel());
 
@@ -104,15 +152,15 @@ public class AdminSalesPanel extends JPanel {
     private JPanel createMovieSalesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
-        panel.setBackground(UIConstants.SURFACE);
+        panel.setBackground(UITheme.SURFACE);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(16, 16, 16, 16)
         ));
 
         JLabel title = new JLabel("Sales by Movie");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_SEMIBOLD);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_SEMIBOLD);
         panel.add(title, BorderLayout.NORTH);
 
         String[] columns = {"Movie Title", "Tickets Sold", "Revenue"};
@@ -124,16 +172,8 @@ public class AdminSalesPanel extends JPanel {
         };
 
         JTable table = new JTable(movieTableModel);
-        table.setBackground(UIConstants.SURFACE);
-        table.setForeground(UIConstants.TEXT);
-        table.setFont(UIConstants.FONT_REGULAR);
         table.setRowHeight(32);
-        table.setShowGrid(false);
-        table.setIntercellSpacing(new Dimension(0, 0));
-        table.getTableHeader().setOpaque(true);
-        table.getTableHeader().setBackground(UIConstants.SURFACE_ALT);
-        table.getTableHeader().setForeground(UIConstants.TEXT_MUTED);
-        table.getTableHeader().setFont(UIConstants.FONT_REGULAR);
+        UIStyles.styleDarkTable(table);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -145,15 +185,15 @@ public class AdminSalesPanel extends JPanel {
     private JPanel createDaySalesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
-        panel.setBackground(UIConstants.SURFACE);
+        panel.setBackground(UITheme.SURFACE);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(16, 16, 16, 16)
         ));
 
         JLabel title = new JLabel("Sales by Date");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_SEMIBOLD);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_SEMIBOLD);
         panel.add(title, BorderLayout.NORTH);
 
         String[] columns = {"Date", "Tickets Sold", "Revenue"};
@@ -165,16 +205,8 @@ public class AdminSalesPanel extends JPanel {
         };
 
         JTable table = new JTable(dayTableModel);
-        table.setBackground(UIConstants.SURFACE);
-        table.setForeground(UIConstants.TEXT);
-        table.setFont(UIConstants.FONT_REGULAR);
         table.setRowHeight(32);
-        table.setShowGrid(false);
-        table.setIntercellSpacing(new Dimension(0, 0));
-        table.getTableHeader().setOpaque(true);
-        table.getTableHeader().setBackground(UIConstants.SURFACE_ALT);
-        table.getTableHeader().setForeground(UIConstants.TEXT_MUTED);
-        table.getTableHeader().setFont(UIConstants.FONT_REGULAR);
+        UIStyles.styleDarkTable(table);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -189,8 +221,10 @@ public class AdminSalesPanel extends JPanel {
 
         Map<String, SalesData> movieSales = new HashMap<>();
         Map<String, SalesData> daySales = new HashMap<>();
+        Map<String, Integer> movieBookingCounts = new HashMap<>();
         double totalRevenue = 0;
         int totalTickets = 0;
+        int totalBookings = 0;
 
         try (BufferedReader reader = new BufferedReader(new FileReader("receipts.txt"))) {
             String line;
@@ -224,6 +258,7 @@ public class AdminSalesPanel extends JPanel {
                     SalesData movieData = movieSales.get(currentMovie);
                     movieData.tickets += currentTickets;
                     movieData.revenue += currentRevenue;
+                    movieBookingCounts.put(currentMovie, movieBookingCounts.getOrDefault(currentMovie, 0) + 1);
 
                     // Update day sales
                     daySales.putIfAbsent(currentDate, new SalesData());
@@ -234,6 +269,7 @@ public class AdminSalesPanel extends JPanel {
                     // Update totals
                     totalTickets += currentTickets;
                     totalRevenue += currentRevenue;
+                    totalBookings++;
 
                     // Reset current booking data
                     currentMovie = "";
@@ -267,6 +303,37 @@ public class AdminSalesPanel extends JPanel {
         // Update summary
         totalRevenueLabel.setText(String.format("$%.2f", totalRevenue));
         totalTicketsLabel.setText(String.valueOf(totalTickets));
+        totalBookingsLabel.setText(String.valueOf(totalBookings));
+        avgPriceLabel.setText(totalBookings == 0 ? "$0.00" : String.format("$%.2f", totalRevenue / totalBookings));
+        topMovieLabel.setText(getTopMovie(movieSales));
+        popularityArea.setText(getPopularityText(movieBookingCounts));
+    }
+
+    private String getTopMovie(Map<String, SalesData> movieSales) {
+        String topMovie = "N/A";
+        double maxRevenue = -1;
+        for (Map.Entry<String, SalesData> entry : movieSales.entrySet()) {
+            if (entry.getValue().revenue > maxRevenue) {
+                maxRevenue = entry.getValue().revenue;
+                topMovie = entry.getKey();
+            }
+        }
+        return topMovie;
+    }
+
+    private String getPopularityText(Map<String, Integer> movieBookingCounts) {
+        if (movieBookingCounts.isEmpty()) {
+            return "No booking data available";
+        }
+        StringBuilder stats = new StringBuilder();
+        movieBookingCounts.entrySet().stream()
+                .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                .forEach(entry -> stats.append("• ")
+                        .append(entry.getKey())
+                        .append(": ")
+                        .append(entry.getValue())
+                        .append(" bookings\n"));
+        return stats.toString();
     }
 
     private static class SalesData {

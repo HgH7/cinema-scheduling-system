@@ -7,15 +7,16 @@ import java.awt.*;
 import java.util.List;
 import model.Movie;
 
-public class AdminMoviesPanel extends JPanel {
+public class AdminMovieManagementPanel extends JPanel {
     private final JTextField titleField = new JTextField();
     private final JTextField durationField = new JTextField();
     private final JComboBox<String> genreBox = new JComboBox<>(new String[]{"Action", "Drama", "Sci-Fi", "Horror", "Comedy", "Animation, Fantasy", "Thriller, Racing", "Sci-Fi, Action", "Drama, Musical"});
     private final JTextField imagePathField = new JTextField();
     private DefaultTableModel tableModel;
-    public AdminMoviesPanel() {
+
+    public AdminMovieManagementPanel() {
         setOpaque(true);
-        setBackground(UIConstants.BACKGROUND);
+        setBackground(UITheme.BACKGROUND);
         setLayout(new BorderLayout(16, 16));
         setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -28,8 +29,8 @@ public class AdminMoviesPanel extends JPanel {
         header.setOpaque(false);
 
         JLabel title = new JLabel("Movie Management");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_TITLE);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_TITLE);
 
         header.add(title, BorderLayout.WEST);
         return header;
@@ -47,16 +48,16 @@ public class AdminMoviesPanel extends JPanel {
     private JPanel createFormPanel() {
         JPanel form = new JPanel();
         form.setOpaque(true);
-        form.setBackground(UIConstants.SURFACE);
+        form.setBackground(UITheme.SURFACE);
         form.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(20, 20, 20, 20)
         ));
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 
         JLabel sectionTitle = new JLabel("Add New Movie");
-        sectionTitle.setForeground(UIConstants.TEXT);
-        sectionTitle.setFont(UIConstants.FONT_SEMIBOLD);
+        sectionTitle.setForeground(UITheme.TEXT);
+        sectionTitle.setFont(UITheme.FONT_SEMIBOLD);
         sectionTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         form.add(sectionTitle);
@@ -74,14 +75,12 @@ public class AdminMoviesPanel extends JPanel {
 
         JPanel imagePathPanel = new JPanel(new BorderLayout(8, 0));
         imagePathPanel.setOpaque(false);
-        imagePathField.setBackground(UIConstants.SURFACE_ALT);
-        imagePathField.setForeground(UIConstants.TEXT);
-        imagePathField.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+        UIStyles.styleTextField(imagePathField);
         imagePathPanel.add(imagePathField, BorderLayout.CENTER);
         
         JButton browseButton = new JButton("Browse...");
-        browseButton.setBackground(UIConstants.SURFACE_ALT);
-        browseButton.setForeground(UIConstants.TEXT);
+        browseButton.setBackground(UITheme.SURFACE_ALT);
+        browseButton.setForeground(UITheme.TEXT);
         browseButton.setFocusPainted(false);
         browseButton.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
@@ -91,15 +90,12 @@ public class AdminMoviesPanel extends JPanel {
         });
         imagePathPanel.add(browseButton, BorderLayout.EAST);
         
-        form.add(createLabeledComponent("Image Path or URL", imagePathPanel));
+        form.add(UIStyles.createLabeledComponent("Image Path or URL", imagePathPanel));
         form.add(Box.createRigidArea(new Dimension(0, 18)));
 
         JButton addButton = new JButton("Add to Library");
-        addButton.setBackground(UIConstants.PRIMARY);
-        addButton.setForeground(Color.WHITE);
-        addButton.setFont(UIConstants.FONT_SEMIBOLD);
+        UIStyles.stylePrimaryButton(addButton);
         addButton.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        addButton.setFocusPainted(false);
         addButton.addActionListener(e -> {
             String title = titleField.getText();
             String durationText = durationField.getText();
@@ -108,9 +104,9 @@ public class AdminMoviesPanel extends JPanel {
             if (!title.isEmpty() && !durationText.isEmpty()) {
                 try {
                     int duration = Integer.parseInt(durationText);
-                    int newId = ServiceContext.getInstance().getMovieService().getAllMovies().size() + 1;
-                    ServiceContext.getInstance().getMovieService().addMovie(newId, title, duration, genre, imagePath);
-                    ServiceContext.getInstance().saveMovies();
+                    int newId = ApplicationServices.getInstance().getMovieService().getAllMovies().size() + 1;
+                    ApplicationServices.getInstance().getMovieService().addMovie(newId, title, duration, genre, imagePath);
+                    ApplicationServices.getInstance().saveMovies();
                     refreshTable();
                     titleField.setText("");
                     durationField.setText("");
@@ -128,15 +124,15 @@ public class AdminMoviesPanel extends JPanel {
     private JPanel createTablePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
-        panel.setBackground(UIConstants.SURFACE);
+        panel.setBackground(UITheme.SURFACE);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(20, 20, 20, 20)
         ));
 
         JLabel title = new JLabel("Current Listings");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_SEMIBOLD);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_SEMIBOLD);
         panel.add(title, BorderLayout.NORTH);
 
         String[] columns = {"Movie", "Duration", "Genre", "Actions"};
@@ -149,17 +145,9 @@ public class AdminMoviesPanel extends JPanel {
         refreshTable();
 
         JTable table = new JTable(tableModel);
-        table.setBackground(UIConstants.SURFACE);
-        table.setForeground(UIConstants.TEXT);
-        table.setFont(UIConstants.FONT_REGULAR);
         table.setRowHeight(40);
-        table.setShowGrid(false);
-        table.setIntercellSpacing(new Dimension(0, 0));
         table.getTableHeader().setReorderingAllowed(false);
-        table.getTableHeader().setOpaque(true);
-        table.getTableHeader().setBackground(UIConstants.SURFACE_ALT);
-        table.getTableHeader().setForeground(UIConstants.TEXT_MUTED);
-        table.getTableHeader().setFont(UIConstants.FONT_REGULAR);
+        UIStyles.styleDarkTable(table);
 
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -169,15 +157,15 @@ public class AdminMoviesPanel extends JPanel {
                 if (row >= 0 && col == 3) {
                     String title = (String) tableModel.getValueAt(row, 0);
                     Movie toRemove = null;
-                    for (Movie m : ServiceContext.getInstance().getMovieService().getAllMovies()) {
+                    for (Movie m : ApplicationServices.getInstance().getMovieService().getAllMovies()) {
                         if (m.getTitle().equals(title)) {
                             toRemove = m;
                             break;
                         }
                     }
                     if (toRemove != null) {
-                        ServiceContext.getInstance().getMovieService().removeMovie(toRemove.getId());
-                        ServiceContext.getInstance().saveMovies();
+                        ApplicationServices.getInstance().getMovieService().removeMovie(toRemove.getId());
+                        ApplicationServices.getInstance().saveMovies();
                         refreshTable();
                     }
                 }
@@ -193,44 +181,19 @@ public class AdminMoviesPanel extends JPanel {
 
     private void refreshTable() {
         tableModel.setRowCount(0);
-        List<Movie> movies = ServiceContext.getInstance().getMovieService().getAllMovies();
+        List<Movie> movies = ApplicationServices.getInstance().getMovieService().getAllMovies();
         for (Movie m : movies) {
             tableModel.addRow(new Object[]{m.getTitle(), m.getDuration() + " min", m.getGenre(), "Delete"});
         }
     }
 
     private JPanel createLabeledField(String labelText, JComponent field) {
-        JPanel panel = new JPanel(new BorderLayout(0, 6));
-        panel.setOpaque(false);
-
-        JLabel label = new JLabel(labelText);
-        label.setForeground(UIConstants.TEXT_MUTED);
-        label.setFont(UIConstants.FONT_REGULAR);
-        field.setFont(UIConstants.FONT_REGULAR);
-        field.setBackground(UIConstants.SURFACE_ALT);
-        field.setForeground(UIConstants.TEXT);
         if (field instanceof JTextField) {
-            ((JTextField) field).setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+            UIStyles.styleTextField((JTextField) field);
         }
         if (field instanceof JComboBox) {
-            ((JComboBox<?>) field).setBackground(UIConstants.SURFACE_ALT);
-            ((JComboBox<?>) field).setForeground(UIConstants.TEXT);
+            UIStyles.styleComboBox((JComboBox<?>) field);
         }
-
-        panel.add(label, BorderLayout.NORTH);
-        panel.add(field, BorderLayout.CENTER);
-        return panel;
-    }
-
-    private JPanel createLabeledComponent(String labelText, JComponent component) {
-        JPanel panel = new JPanel(new BorderLayout(0, 6));
-        panel.setOpaque(false);
-
-        JLabel label = new JLabel(labelText);
-        label.setForeground(UIConstants.TEXT_MUTED);
-        label.setFont(UIConstants.FONT_REGULAR);
-        panel.add(label, BorderLayout.NORTH);
-        panel.add(component, BorderLayout.CENTER);
-        return panel;
+        return UIStyles.createLabeledComponent(labelText, field);
     }
 }

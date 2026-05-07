@@ -3,7 +3,7 @@ package ui;
 import java.awt.Color;
 import java.awt.Font;
 
-public class UIConstants {
+public class UITheme {
     public static final Color BACKGROUND = new Color(0x20, 0x0e, 0x0c);
     public static final Color SURFACE = new Color(0x1a, 0x1a, 0x1a);
     public static final Color SURFACE_ALT = new Color(0x12, 0x12, 0x12);

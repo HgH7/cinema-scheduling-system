@@ -7,17 +7,12 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import model.Booking;
-import model.Seat;
-
-public class AdminBookingsPanel extends JPanel {
+public class AdminBookingManagementPanel extends JPanel {
     private DefaultTableModel tableModel;
 
-    public AdminBookingsPanel() {
+    public AdminBookingManagementPanel() {
         setOpaque(true);
-        setBackground(UIConstants.BACKGROUND);
+        setBackground(UITheme.BACKGROUND);
         setLayout(new BorderLayout(16, 16));
         setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -37,8 +32,8 @@ public class AdminBookingsPanel extends JPanel {
         header.setOpaque(false);
 
         JLabel title = new JLabel("Booking Overview");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_TITLE);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_TITLE);
 
         header.add(title, BorderLayout.WEST);
         return header;
@@ -55,9 +50,9 @@ public class AdminBookingsPanel extends JPanel {
     private JPanel createFilterPanel() {
         JPanel filters = new JPanel(new GridLayout(1, 3, 12, 12));
         filters.setOpaque(true);
-        filters.setBackground(UIConstants.SURFACE);
+        filters.setBackground(UITheme.SURFACE);
         filters.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(16, 16, 16, 16)
         ));
 
@@ -71,9 +66,9 @@ public class AdminBookingsPanel extends JPanel {
     private JPanel createTablePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
-        panel.setBackground(UIConstants.SURFACE);
+        panel.setBackground(UITheme.SURFACE);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(16, 16, 16, 16)
         ));
 
@@ -88,16 +83,8 @@ public class AdminBookingsPanel extends JPanel {
         refreshTable();
 
         JTable table = new JTable(tableModel);
-        table.setBackground(UIConstants.SURFACE);
-        table.setForeground(UIConstants.TEXT);
-        table.setFont(UIConstants.FONT_REGULAR);
         table.setRowHeight(36);
-        table.setShowGrid(false);
-        table.setIntercellSpacing(new Dimension(0, 0));
-        table.getTableHeader().setOpaque(true);
-        table.getTableHeader().setBackground(UIConstants.SURFACE_ALT);
-        table.getTableHeader().setForeground(UIConstants.TEXT_MUTED);
-        table.getTableHeader().setFont(UIConstants.FONT_REGULAR);
+        UIStyles.styleDarkTable(table);
 
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -181,24 +168,12 @@ public class AdminBookingsPanel extends JPanel {
     }
 
     private JPanel labeledField(String labelText, JComponent component) {
-        JPanel wrapper = new JPanel(new BorderLayout(0, 6));
-        wrapper.setOpaque(false);
-
-        JLabel label = new JLabel(labelText);
-        label.setForeground(UIConstants.TEXT_MUTED);
-        label.setFont(UIConstants.FONT_REGULAR);
-        wrapper.add(label, BorderLayout.NORTH);
-
-        component.setBackground(UIConstants.SURFACE_ALT);
-        component.setForeground(UIConstants.TEXT);
         if (component instanceof JTextField) {
-            ((JTextField) component).setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+            UIStyles.styleTextField((JTextField) component);
         }
         if (component instanceof JComboBox) {
-            ((JComboBox<?>) component).setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+            UIStyles.styleComboBox((JComboBox<?>) component);
         }
-
-        wrapper.add(component, BorderLayout.CENTER);
-        return wrapper;
+        return UIStyles.createLabeledComponent(labelText, component);
     }
 }

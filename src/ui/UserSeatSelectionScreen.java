@@ -16,13 +16,13 @@ import model.Seat;
 import model.Show;
 import model.Booking;
 
-public class SeatSelectionUI extends JFrame {
+public class UserSeatSelectionScreen extends JFrame {
     private final JLabel totalLabel = new JLabel();
     private final int pricePerSeat = 14;
     private final SeatToggleButton[][] seatButtons = new SeatToggleButton[4][10];
     private final Show show;
 
-    public SeatSelectionUI(Show show) {
+    public UserSeatSelectionScreen(Show show) {
         super("Select Your Seats");
         this.show = show;
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -30,7 +30,7 @@ public class SeatSelectionUI extends JFrame {
         setLocationRelativeTo(null);
 
         JPanel root = new JPanel(new BorderLayout(12, 12));
-        root.setBackground(UIConstants.BACKGROUND);
+        root.setBackground(UITheme.BACKGROUND);
         root.setBorder(new EmptyBorder(18, 18, 18, 18));
 
         root.add(createHeader(), BorderLayout.NORTH);
@@ -45,13 +45,13 @@ public class SeatSelectionUI extends JFrame {
         header.setOpaque(false);
 
         JLabel title = new JLabel("Select Your Seats");
-        title.setForeground(UIConstants.TEXT);
-        title.setFont(UIConstants.FONT_TITLE);
+        title.setForeground(UITheme.TEXT);
+        title.setFont(UITheme.FONT_TITLE);
 
         String subtitleText = show != null ? (show.getMovie().getTitle() + " • Grand Theater • " + show.getScreen().getName() + " • Row A-D • " + show.getShowTime()) : "Movie • Grand Theater • Screen • Row A-D";
         JLabel subtitle = new JLabel(subtitleText);
-        subtitle.setForeground(UIConstants.TEXT_MUTED);
-        subtitle.setFont(UIConstants.FONT_REGULAR);
+        subtitle.setForeground(UITheme.TEXT_MUTED);
+        subtitle.setFont(UITheme.FONT_REGULAR);
 
         JPanel top = new JPanel();
         top.setOpaque(false);
@@ -67,9 +67,9 @@ public class SeatSelectionUI extends JFrame {
     private JPanel createSeatPanel() {
         JPanel seatArea = new JPanel(new BorderLayout());
         seatArea.setOpaque(true);
-        seatArea.setBackground(UIConstants.SURFACE);
+        seatArea.setBackground(UITheme.SURFACE);
         seatArea.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIConstants.BORDER),
+                BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(24, 24, 24, 24)
         ));
 
@@ -78,13 +78,13 @@ public class SeatSelectionUI extends JFrame {
         screenBar.setLayout(new BoxLayout(screenBar, BoxLayout.Y_AXIS));
         JPanel screenTop = new JPanel();
         screenTop.setOpaque(true);
-        screenTop.setBackground(UIConstants.PRIMARY);
+        screenTop.setBackground(UITheme.PRIMARY);
         screenTop.setPreferredSize(new Dimension(0, 8));
         screenTop.setMaximumSize(new Dimension(Integer.MAX_VALUE, 8));
         screenBar.add(screenTop);
         JLabel screenLabel = new JLabel("THE SCREEN");
-        screenLabel.setForeground(UIConstants.PRIMARY);
-        screenLabel.setFont(UIConstants.FONT_REGULAR);
+        screenLabel.setForeground(UITheme.PRIMARY);
+        screenLabel.setFont(UITheme.FONT_REGULAR);
         screenLabel.setBorder(new EmptyBorder(12, 0, 0, 0));
         screenBar.add(screenLabel);
 
@@ -107,8 +107,8 @@ public class SeatSelectionUI extends JFrame {
             gbc.gridy = row;
             gbc.gridx = 0;
             JLabel rowLabel = new JLabel(String.valueOf(rows[row]));
-            rowLabel.setForeground(UIConstants.TEXT_MUTED);
-            rowLabel.setFont(UIConstants.FONT_REGULAR);
+            rowLabel.setForeground(UITheme.TEXT_MUTED);
+            rowLabel.setFont(UITheme.FONT_REGULAR);
             grid.add(rowLabel, gbc);
 
             for (int col = 0; col < 10; col++) {
@@ -138,9 +138,9 @@ public class SeatSelectionUI extends JFrame {
     private JPanel createLegendPanel() {
         JPanel legend = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 12));
         legend.setOpaque(false);
-        legend.add(createLegendChip(UIConstants.AVAILABLE, "Available"));
-        legend.add(createLegendChip(UIConstants.BOOKED, "Booked"));
-        legend.add(createLegendChip(UIConstants.SELECTED_SEAT, "Selected"));
+        legend.add(createLegendChip(UITheme.AVAILABLE, "Available"));
+        legend.add(createLegendChip(UITheme.BOOKED, "Booked"));
+        legend.add(createLegendChip(UITheme.SELECTED_SEAT, "Selected"));
         return legend;
     }
 
@@ -151,10 +151,10 @@ public class SeatSelectionUI extends JFrame {
         swatch.setOpaque(true);
         swatch.setBackground(color);
         swatch.setPreferredSize(new Dimension(16, 16));
-        swatch.setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
+        swatch.setBorder(BorderFactory.createLineBorder(UITheme.BORDER));
         JLabel text = new JLabel(label);
-        text.setForeground(UIConstants.TEXT);
-        text.setFont(UIConstants.FONT_REGULAR);
+        text.setForeground(UITheme.TEXT);
+        text.setFont(UITheme.FONT_REGULAR);
         chip.add(swatch);
         chip.add(text);
         return chip;
@@ -165,15 +165,12 @@ public class SeatSelectionUI extends JFrame {
         footer.setOpaque(false);
         footer.setBorder(new EmptyBorder(16, 0, 0, 0));
 
-        totalLabel.setForeground(UIConstants.TEXT);
-        totalLabel.setFont(UIConstants.FONT_SEMIBOLD);
+        totalLabel.setForeground(UITheme.TEXT);
+        totalLabel.setFont(UITheme.FONT_SEMIBOLD);
         totalLabel.setText("Total Price: $0.00");
 
         JButton confirm = new JButton("Confirm Booking");
-        confirm.setBackground(UIConstants.PRIMARY);
-        confirm.setForeground(Color.WHITE);
-        confirm.setFont(UIConstants.FONT_SEMIBOLD);
-        confirm.setFocusPainted(false);
+        UIStyles.stylePrimaryButton(confirm);
         confirm.addActionListener(e -> {
             if (show == null) {
                 JOptionPane.showMessageDialog(this, "No show available for this movie.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -196,8 +193,8 @@ public class SeatSelectionUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Please select at least one seat.", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            int newId = ServiceContext.getInstance().getBookingService().getAllBookings().size() + 1;
-            Booking b = ServiceContext.getInstance().getBookingService().createBooking(newId, show, selectedSeats, "Moviegoer");
+            int newId = ApplicationServices.getInstance().getBookingService().getAllBookings().size() + 1;
+            Booking b = ApplicationServices.getInstance().getBookingService().createBooking(newId, show, selectedSeats, "Moviegoer");
             if (b != null) {
                 showReceiptAndSave(b);
                 dispose();
@@ -242,8 +239,8 @@ public class SeatSelectionUI extends JFrame {
         JTextArea textArea = new JTextArea(receipt.toString());
         textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         textArea.setEditable(false);
-        textArea.setBackground(UIConstants.SURFACE);
-        textArea.setForeground(UIConstants.TEXT);
+        textArea.setBackground(UITheme.SURFACE);
+        textArea.setForeground(UITheme.TEXT);
         JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "Booking Receipt", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -267,9 +264,9 @@ public class SeatSelectionUI extends JFrame {
             super(label);
             setOpaque(false);
             setContentAreaFilled(false);
-            setForeground(UIConstants.TEXT);
-            setBorder(BorderFactory.createLineBorder(UIConstants.BORDER));
-            setFont(UIConstants.FONT_REGULAR);
+            setForeground(UITheme.TEXT);
+            setBorder(BorderFactory.createLineBorder(UITheme.BORDER));
+            setFont(UITheme.FONT_REGULAR);
             setPreferredSize(new Dimension(56, 38));
             setFocusPainted(false);
             addActionListener(e -> repaint());
@@ -278,11 +275,11 @@ public class SeatSelectionUI extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             if (booked) {
-                g.setColor(UIConstants.BOOKED);
+                g.setColor(UITheme.BOOKED);
             } else if (isSelected()) {
-                g.setColor(UIConstants.SELECTED_SEAT);
+                g.setColor(UITheme.SELECTED_SEAT);
             } else {
-                g.setColor(UIConstants.AVAILABLE);
+                g.setColor(UITheme.AVAILABLE);
             }
             g.fillRect(0, 0, getWidth(), getHeight());
             super.paintComponent(g);

@@ -3,11 +3,11 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class AdminUI extends JFrame {
+public class AdminDashboard extends JFrame {
     private final CardLayout contentLayout = new CardLayout();
     private final JPanel contentPanel = new JPanel(contentLayout);
 
-    public AdminUI() {
+    public AdminDashboard() {
         super("Cinema Admin");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1400, 900);
@@ -18,11 +18,10 @@ public class AdminUI extends JFrame {
         add(createTopBar(), BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
 
-        contentPanel.add(new AdminMoviesPanel(), "movies");
-        contentPanel.add(new AdminShowsPanel(), "shows");
-        contentPanel.add(new AdminBookingsPanel(), "bookings");
-        contentPanel.add(new AdminSalesPanel(), "sales");
-        contentPanel.add(new DashboardPanel(), "dashboard");
+        contentPanel.add(new AdminMovieManagementPanel(), "movies");
+        contentPanel.add(new AdminShowManagementPanel(), "shows");
+        contentPanel.add(new AdminBookingManagementPanel(), "bookings");
+        contentPanel.add(new AdminAnalyticsDashboardPanel(), "analytics");
         contentLayout.show(contentPanel, "movies");
 
         setVisible(true);
@@ -30,27 +29,26 @@ public class AdminUI extends JFrame {
 
     private JPanel createSidebar() {
         JPanel side = new JPanel();
-        side.setBackground(UIConstants.SURFACE);
+        side.setBackground(UITheme.SURFACE);
         side.setPreferredSize(new Dimension(260, 0));
         side.setLayout(new BoxLayout(side, BoxLayout.Y_AXIS));
         side.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
 
         JLabel brand = new JLabel("Cinema Admin");
-        brand.setForeground(UIConstants.PRIMARY);
-        brand.setFont(UIConstants.FONT_BOLD);
+        brand.setForeground(UITheme.PRIMARY);
+        brand.setFont(UITheme.FONT_BOLD);
         side.add(brand);
         side.add(Box.createRigidArea(new Dimension(0, 6)));
         JLabel subtitle = new JLabel("Premium Experience");
-        subtitle.setForeground(UIConstants.TEXT_MUTED);
-        subtitle.setFont(UIConstants.FONT_REGULAR);
+        subtitle.setForeground(UITheme.TEXT_MUTED);
+        subtitle.setFont(UITheme.FONT_REGULAR);
         side.add(subtitle);
         side.add(Box.createRigidArea(new Dimension(0, 24)));
 
         side.add(createSidebarButton("Movies", "movies", true));
         side.add(createSidebarButton("Showtimes", "shows", false));
         side.add(createSidebarButton("Bookings", "bookings", false));
-        side.add(createSidebarButton("Sales", "sales", false));
-        side.add(createSidebarButton("Dashboard", "dashboard", false));
+        side.add(createSidebarButton("Analytics Dashboard", "analytics", false));
         side.add(Box.createVerticalGlue());
 
         return side;
@@ -60,9 +58,9 @@ public class AdminUI extends JFrame {
         JButton button = new JButton(label);
         button.setOpaque(true);
         button.setBorderPainted(false);
-        button.setBackground(active ? UIConstants.SURFACE_ALT : UIConstants.SURFACE);
-        button.setForeground(active ? UIConstants.TEXT : UIConstants.TEXT_MUTED);
-        button.setFont(UIConstants.FONT_REGULAR);
+        button.setBackground(active ? UITheme.SURFACE_ALT : UITheme.SURFACE);
+        button.setForeground(active ? UITheme.TEXT : UITheme.TEXT_MUTED);
+        button.setFont(UITheme.FONT_REGULAR);
         button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
         button.setAlignmentX(Component.LEFT_ALIGNMENT);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -78,17 +76,15 @@ public class AdminUI extends JFrame {
         top.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
 
         JLabel pageTitle = new JLabel("Cinema Admin Dashboard");
-        pageTitle.setForeground(UIConstants.TEXT);
-        pageTitle.setFont(UIConstants.FONT_SEMIBOLD);
+        pageTitle.setForeground(UITheme.TEXT);
+        pageTitle.setFont(UITheme.FONT_SEMIBOLD);
 
         JButton logout = new JButton("Log out");
-        logout.setBackground(UIConstants.PRIMARY);
-        logout.setForeground(Color.WHITE);
-        logout.setFont(UIConstants.FONT_SEMIBOLD);
+        UIStyles.stylePrimaryButton(logout);
         logout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         logout.addActionListener(e -> {
             dispose();
-            MainMenuUI.startApplication();
+            AppMainMenu.startApplication();
         });
 
         top.add(pageTitle, BorderLayout.WEST);
