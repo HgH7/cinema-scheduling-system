@@ -6,6 +6,10 @@ import java.awt.*;
 public class AdminDashboard extends JFrame {
     private final CardLayout contentLayout = new CardLayout();
     private final JPanel contentPanel = new JPanel(contentLayout);
+    private final AdminMovieManagementPanel moviesPanel = new AdminMovieManagementPanel();
+    private final AdminShowManagementPanel showsPanel = new AdminShowManagementPanel();
+    private final AdminBookingManagementPanel bookingsPanel = new AdminBookingManagementPanel();
+    private final AdminAnalyticsDashboardPanel analyticsPanel = new AdminAnalyticsDashboardPanel();
 
     public AdminDashboard() {
         super("Cinema Admin");
@@ -18,10 +22,10 @@ public class AdminDashboard extends JFrame {
         add(createTopBar(), BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
 
-        contentPanel.add(new AdminMovieManagementPanel(), "movies");
-        contentPanel.add(new AdminShowManagementPanel(), "shows");
-        contentPanel.add(new AdminBookingManagementPanel(), "bookings");
-        contentPanel.add(new AdminAnalyticsDashboardPanel(), "analytics");
+        contentPanel.add(moviesPanel, "movies");
+        contentPanel.add(showsPanel, "shows");
+        contentPanel.add(bookingsPanel, "bookings");
+        contentPanel.add(analyticsPanel, "analytics");
         contentLayout.show(contentPanel, "movies");
 
         setVisible(true);
@@ -66,6 +70,15 @@ public class AdminDashboard extends JFrame {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.addActionListener(e -> {
             contentLayout.show(contentPanel, cardName);
+            if ("analytics".equals(cardName)) {
+                analyticsPanel.refreshData();
+            } else if ("bookings".equals(cardName)) {
+                bookingsPanel.refreshTable();
+            } else if ("movies".equals(cardName)) {
+                moviesPanel.refreshTable();
+            } else if ("shows".equals(cardName)) {
+                showsPanel.refreshTable();
+            }
         });
         return button;
     }

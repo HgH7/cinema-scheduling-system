@@ -2,13 +2,22 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import model.Booking;
+import service.CinemaServiceManager;
+import service.ReceiptService;
+
 public class AdminBookingManagementPanel extends JPanel {
     private DefaultTableModel tableModel;
+    private JButton cancelSelectedButton;
+    private String selectedBookingId;
 
     public AdminBookingManagementPanel() {
         setOpaque(true);
@@ -85,85 +94,132 @@ public class AdminBookingManagementPanel extends JPanel {
         JTable table = new JTable(tableModel);
         table.setRowHeight(36);
         UIStyles.styleDarkTable(table);
-
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int row = table.rowAtPoint(evt.getPoint());
-                int col = table.columnAtPoint(evt.getPoint());
-                if (row >= 0 && col == 6) {
-                    String id = (String) tableModel.getValueAt(row, 0);
-                    cancelBooking(id);
-                }
-            }
-        });
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        configureTableSelection(table);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         panel.add(scroll, BorderLayout.CENTER);
+        panel.add(createActionBar(), BorderLayout.SOUTH);
         return panel;
     }
 
-    private void refreshTable() {
-        if (tableModel == null) return;
-        tableModel.setRowCount(0);
+    private JPanel createActionBar() {
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        actions.setOpaque(false);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("receipts.txt"))) {
-            String line;
-            String id = "";
-            String movie = "";
-            String user = "Moviegoer";
-            String seats = "";
-            String time = "";
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith("Booking ID: ")) {
-                    id = line.substring(12);
-                } else if (line.startsWith("Movie: ")) {
-                    movie = line.substring(7);
-                } else if (line.startsWith("Date: ")) {
-                    time = line.substring(6);
-                } else if (line.startsWith("Seats: ")) {
-                    seats = line.substring(7);
-                } else if (line.startsWith("Total Price: ")) {
-                    tableModel.addRow(new Object[]{id, movie, user, seats, time, "Confirmed", "Cancel"});
-                    id = ""; movie = ""; seats = ""; time = "";
+        cancelSelectedButton = new JButton("Cancel Selected Booking");
+        UIStyles.stylePrimaryButton(cancelSelectedButton);
+        cancelSelectedButton.setEnabled(false);
+        cancelSelectedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedBookingId != null) {
+                    promptCancelBooking(selectedBookingId);
                 }
             }
-        } catch (IOException e) {
-            // File might not exist yet, ignore
+        });
+
+        actions.add(cancelSelectedButton);
+        return actions;
+    }
+
+    private void configureTableSelection(JTable table) {
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()) {
+                    int row = table.getSelectedRow();
+                    if (row >= 0) {
+                        selectedBookingId = (String) tableModel.getValueAt(row, 0);
+                        cancelSelectedButton.setEnabled(true);
+                    } else {
+                        selectedBookingId = null;
+                        cancelSelectedButton.setEnabled(false);
+                    }
+                }
+            }
+        });
+    }
+
+    public void refreshTable() {
+        if (tableModel == null) return;
+        tableModel.setRowCount(0);
+        selectedBookingId = null;
+        if (cancelSelectedButton != null) {
+            cancelSelectedButton.setEnabled(false);
+        }
+
+        ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
+        java.util.List<ReceiptService.ReceiptData> receipts = receiptService.getAllReceiptData();
+        if (receipts.isEmpty()) {
+            for (Booking booking : CinemaServiceManager.getInstance().getBookingService().getAllBookings()) {
+                tableModel.addRow(new Object[]{
+                        booking.getId(),
+                        booking.getShow().getMovie().getTitle(),
+                        booking.getUserName(),
+                        booking.getSeats().stream().map(seat -> seat.getRow() + seat.getNumber()).reduce((a, b) -> a + ", " + b).orElse(""),
+                        booking.getShow().getShowTime(),
+                        "Confirmed",
+                        "Cancel"
+                });
+            }
+            return;
+        }
+
+        for (ReceiptService.ReceiptData receipt : receipts) {
+            tableModel.addRow(new Object[]{
+                    receipt.bookingId,
+                    receipt.movie,
+                    "Moviegoer",
+                    receipt.seats.toString().replace("[", "").replace("]", "").replace(", ", ", "),
+                    receipt.date + " " + receipt.showtime,
+                    "Confirmed",
+                    "Cancel"
+            });
         }
     }
 
-    private void cancelBooking(String bookingId) {
-        java.io.File file = new java.io.File("receipts.txt");
-        if (!file.exists()) return;
+    private void promptCancelBooking(String bookingId) {
+        ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
+        ReceiptService.ReceiptData receipt = findReceiptById(bookingId);
+        String seatText = receipt != null ? receipt.seats.toString().replace("[", "").replace("]", "") : "Unknown";
+        String message = "Booking ID: #CR-" + bookingId + "\n"
+                + "Movie: " + (receipt != null ? receipt.movie : "Unknown") + "\n"
+                + "Showtime: " + (receipt != null ? receipt.showtime : "Unknown") + "\n"
+                + "Seats: " + seatText + "\n\n"
+                + "Do you want to cancel this booking?";
+        int option = JOptionPane.showConfirmDialog(this, message, "Confirm Cancel Booking", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            cancelBooking(bookingId);
+        }
+    }
 
-        try {
-            java.util.List<String> lines = java.nio.file.Files.readAllLines(file.toPath());
-            java.util.List<String> outputLines = new java.util.ArrayList<>();
-            java.util.List<String> currentReceipt = new java.util.ArrayList<>();
-            boolean deleteThisReceipt = false;
-
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-                currentReceipt.add(line);
-                
-                if (line.startsWith("Booking ID: ") && line.equals("Booking ID: " + bookingId)) {
-                    deleteThisReceipt = true;
-                }
-                
-                if (line.trim().isEmpty() || i == lines.size() - 1) {
-                    if (!deleteThisReceipt) {
-                        outputLines.addAll(currentReceipt);
-                    }
-                    currentReceipt.clear();
-                    deleteThisReceipt = false;
-                }
+    private ReceiptService.ReceiptData findReceiptById(String bookingId) {
+        for (ReceiptService.ReceiptData receipt : CinemaServiceManager.getInstance().getReceiptService().getAllReceiptData()) {
+            if (receipt.bookingId.equals(bookingId)) {
+                return receipt;
             }
-            java.nio.file.Files.write(file.toPath(), outputLines);
+        }
+        return null;
+    }
+
+    private void cancelBooking(String bookingId) {
+        ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
+        boolean removed = receiptService.removeReceipt(bookingId);
+        boolean bookingCanceled = false;
+        try {
+            int idValue = Integer.parseInt(bookingId);
+            bookingCanceled = CinemaServiceManager.getInstance().getBookingService().cancelBooking(idValue);
+        } catch (NumberFormatException ignored) {
+            // If the booking id does not parse, we still remove the receipt data.
+        }
+        if (removed || bookingCanceled) {
             refreshTable();
-        } catch (IOException e) {
-            e.printStackTrace();
+            selectedBookingId = null;
+            cancelSelectedButton.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "Unable to cancel booking. Receipt not found.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

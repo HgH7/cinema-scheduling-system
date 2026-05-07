@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import model.Movie;
 import model.Show;
+import service.CinemaServiceManager;
 
 public class UserMovieCatalogPanel extends JPanel {
     private JPanel cards;
@@ -66,21 +67,21 @@ public class UserMovieCatalogPanel extends JPanel {
     private void populateCards(String query) {
         cards.removeAll();
         String q = query.toLowerCase();
-        List<Movie> movies = ApplicationServices.getInstance().getMovieService().getAllMovies();
+        List<Movie> movies = CinemaServiceManager.getInstance().getMovieService().getAllMovies();
         for (Movie movie : movies) {
             if (movie.getTitle().toLowerCase().contains(q) || movie.getGenre().toLowerCase().contains(q)) {
                 int h = movie.getDuration() / 60;
                 int m = movie.getDuration() % 60;
                 String duration = h + "h " + m + "m";
                 String[] tags = movie.getGenre().split(", ");
-                cards.add(createCard(movie.getTitle(), duration + " • English", "8.5", tags, UITheme.PRIMARY, movie.getImagePath()));
+                cards.add(createCard(movie.getTitle(), duration + " • English", tags, movie.getImagePath()));
             }
         }
         cards.revalidate();
         cards.repaint();
     }
 
-    private JPanel createCard(String titleText, String metaText, String score, String[] tags, Color accent, String imagePath) {
+    private JPanel createCard(String titleText, String metaText, String[] tags, String imagePath) {
         JPanel card = new JPanel(new BorderLayout());
         card.setOpaque(true);
         card.setBackground(UITheme.SURFACE);
@@ -114,14 +115,9 @@ public class UserMovieCatalogPanel extends JPanel {
         meta.setForeground(UITheme.TEXT_MUTED);
         meta.setFont(UITheme.FONT_REGULAR);
 
-        JLabel scoreLabel = new JLabel(score);
-        scoreLabel.setForeground(accent);
-        scoreLabel.setFont(UITheme.FONT_SEMIBOLD);
-
         JPanel top = new JPanel(new BorderLayout());
         top.setOpaque(false);
         top.add(title, BorderLayout.WEST);
-        top.add(scoreLabel, BorderLayout.EAST);
 
         JPanel tagsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         tagsPanel.setOpaque(false);
@@ -150,14 +146,37 @@ public class UserMovieCatalogPanel extends JPanel {
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Show firstShow = null;
-                for (Show s : ApplicationServices.getInstance().getShowService().getAllShows()) {
-                    if (s.getMovie().getTitle().equals(titleText)) {
-                        firstShow = s;
-                        break;
+                java.util.List<Show> shows = CinemaServiceManager.getInstance().getShowService().findShowsByMovieTitle(titleText);
+                if (shows.isEmpty()) {
+                    JOptionPane.showMessageDialog(UserMovieCatalogPanel.this, "No showtimes are available for this movie.", "No Shows", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+                Show selectedShow = shows.get(0);
+                if (shows.size() > 1) {
+                    String[] options = new String[shows.size()];
+                    for (int i = 0; i < shows.size(); i++) {
+                        options[i] = shows.get(i).getScreen().getName() + " • " + shows.get(i).getShowTime();
+                    }
+                    String choice = (String) JOptionPane.showInputDialog(
+                            UserMovieCatalogPanel.this,
+                            "Choose a showtime for " + titleText,
+                            "Select Showtime",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            options,
+                            options[0]
+                    );
+                    if (choice == null) {
+                        return;
+                    }
+                    for (int i = 0; i < options.length; i++) {
+                        if (options[i].equals(choice)) {
+                            selectedShow = shows.get(i);
+                            break;
+                        }
                     }
                 }
-                new UserSeatSelectionScreen(firstShow).setVisible(true);
+                new UserSeatSelectionScreen(selectedShow).setVisible(true);
             }
         });
 

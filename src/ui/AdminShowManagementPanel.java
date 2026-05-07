@@ -5,9 +5,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import service.CinemaServiceManager;
 import model.Movie;
 import model.Screen;
 import model.Show;
+import util.InputValidator;
 
 public class AdminShowManagementPanel extends JPanel {
     private JComboBox<String> movieBox;
@@ -92,59 +94,47 @@ public class AdminShowManagementPanel extends JPanel {
         scheduleButton.addActionListener(e -> {
             String selectedMovieTitle = (String) movieBox.getSelectedItem();
             String time = timeField.getText();
-            if (selectedMovieTitle != null && time != null && !time.isEmpty()) {
-                Movie movie = null;
-                for (Movie m : ApplicationServices.getInstance().getMovieService().getAllMovies()) {
-                    if (m.getTitle().equals(selectedMovieTitle)) {
-                        movie = m;
-                        break;
-                    }
+            if (selectedMovieTitle == null || selectedMovieTitle.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select a movie.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                InputValidator.validateShowTime(time);
+            } catch (InputValidator.ValidationException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Time", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Movie movie = null;
+            for (Movie m : CinemaServiceManager.getInstance().getMovieService().getAllMovies()) {
+                if (m.getTitle().equals(selectedMovieTitle)) {
+                    movie = m;
+                    break;
                 }
-                if (movie != null) {
-                    String screenName = (String) screenBox.getSelectedItem();
-                    int screenNum = Integer.parseInt(screenName.replace("Screen ", ""));
-                    Screen screen = new Screen(screenNum, screenName, 4, 10);
-                    
-                    try {
-                        int newStart = parseTime(time);
-                        int newEnd = newStart + movie.getDuration();
-                        boolean conflict = false;
-                        
-                        for (Show s : ApplicationServices.getInstance().getShowService().getAllShows()) {
-                            if (s.getScreen().getName().equals(screenName)) {
-                                int existingStart = parseTime(s.getShowTime());
-                                int existingEnd = existingStart + s.getMovie().getDuration();
-                                if (newStart < existingEnd && newEnd > existingStart) {
-                                    conflict = true;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (conflict) {
-                            JOptionPane.showMessageDialog(this, "Time conflict on " + screenName + " with an existing show.", "Error", JOptionPane.ERROR_MESSAGE);
-                        } else {
-                            int newId = ApplicationServices.getInstance().getShowService().getAllShows().size() + 1;
-                            Show newShow = ApplicationServices.getInstance().getShowService().addShow(newId, movie, screen, time);
-                            if (newShow != null) {
-                                refreshTable();
-                                timeField.setText("18:30");
-                            }
-                        }
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(this, "Invalid time format. Please use HH:mm.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
+            }
+
+            if (movie == null) {
+                JOptionPane.showMessageDialog(this, "Selected movie could not be found.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String screenName = (String) screenBox.getSelectedItem();
+            int screenNum = Integer.parseInt(screenName.replace("Screen ", ""));
+            Screen screen = new Screen(screenNum, screenName, 4, 10);
+
+            int newId = CinemaServiceManager.getInstance().getShowService().getAllShows().size() + 1;
+            Show newShow = CinemaServiceManager.getInstance().getShowService().addShow(newId, movie, screen, time);
+            if (newShow != null) {
+                refreshTable();
+                timeField.setText("18:30");
+            } else {
+                JOptionPane.showMessageDialog(this, "Time conflict on " + screenName + " with an existing show.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         form.add(scheduleButton);
 
         return form;
-    }
-
-    private int parseTime(String time) {
-        String[] parts = time.split(":");
-        return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
     }
 
     private JPanel createTablePanel() {
@@ -181,14 +171,14 @@ public class AdminShowManagementPanel extends JPanel {
 
     private void refreshMovieBox() {
         movieBox.removeAllItems();
-        for (Movie m : ApplicationServices.getInstance().getMovieService().getAllMovies()) {
+        for (Movie m : CinemaServiceManager.getInstance().getMovieService().getAllMovies()) {
             movieBox.addItem(m.getTitle());
         }
     }
 
-    private void refreshTable() {
+    public void refreshTable() {
         tableModel.setRowCount(0);
-        for (Show s : ApplicationServices.getInstance().getShowService().getAllShows()) {
+        for (Show s : CinemaServiceManager.getInstance().getShowService().getAllShows()) {
             tableModel.addRow(new Object[]{s.getMovie().getTitle(), s.getScreen().getName(), s.getShowTime(), "Active"});
         }
     }

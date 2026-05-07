@@ -6,6 +6,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 import model.Movie;
+import service.CinemaServiceManager;
+import util.InputValidator;
 
 public class AdminMovieManagementPanel extends JPanel {
     private final JTextField titleField = new JTextField();
@@ -101,19 +103,23 @@ public class AdminMovieManagementPanel extends JPanel {
             String durationText = durationField.getText();
             String genre = (String) genreBox.getSelectedItem();
             String imagePath = imagePathField.getText();
-            if (!title.isEmpty() && !durationText.isEmpty()) {
-                try {
-                    int duration = Integer.parseInt(durationText);
-                    int newId = ApplicationServices.getInstance().getMovieService().getAllMovies().size() + 1;
-                    ApplicationServices.getInstance().getMovieService().addMovie(newId, title, duration, genre, imagePath);
-                    ApplicationServices.getInstance().saveMovies();
-                    refreshTable();
-                    titleField.setText("");
-                    durationField.setText("");
-                    imagePathField.setText("");
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Duration must be a number", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            try {
+                InputValidator.validateMovieTitle(title);
+                InputValidator.validateDuration(durationText);
+                InputValidator.validateGenre(genre);
+
+                int duration = Integer.parseInt(durationText);
+                int newId = CinemaServiceManager.getInstance().getMovieService().getAllMovies().size() + 1;
+                CinemaServiceManager.getInstance().getMovieService().addMovie(newId, title, duration, genre, imagePath);
+                CinemaServiceManager.getInstance().getMovieService().saveMovies();
+                refreshTable();
+                titleField.setText("");
+                durationField.setText("");
+                imagePathField.setText("");
+            } catch (InputValidator.ValidationException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Duration must be a number", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         form.add(addButton);
@@ -157,15 +163,15 @@ public class AdminMovieManagementPanel extends JPanel {
                 if (row >= 0 && col == 3) {
                     String title = (String) tableModel.getValueAt(row, 0);
                     Movie toRemove = null;
-                    for (Movie m : ApplicationServices.getInstance().getMovieService().getAllMovies()) {
+                    for (Movie m : CinemaServiceManager.getInstance().getMovieService().getAllMovies()) {
                         if (m.getTitle().equals(title)) {
                             toRemove = m;
                             break;
                         }
                     }
                     if (toRemove != null) {
-                        ApplicationServices.getInstance().getMovieService().removeMovie(toRemove.getId());
-                        ApplicationServices.getInstance().saveMovies();
+                        CinemaServiceManager.getInstance().getMovieService().removeMovie(toRemove.getId());
+                        CinemaServiceManager.getInstance().getMovieService().saveMovies();
                         refreshTable();
                     }
                 }
@@ -179,9 +185,9 @@ public class AdminMovieManagementPanel extends JPanel {
         return panel;
     }
 
-    private void refreshTable() {
+    public void refreshTable() {
         tableModel.setRowCount(0);
-        List<Movie> movies = ApplicationServices.getInstance().getMovieService().getAllMovies();
+        List<Movie> movies = CinemaServiceManager.getInstance().getMovieService().getAllMovies();
         for (Movie m : movies) {
             tableModel.addRow(new Object[]{m.getTitle(), m.getDuration() + " min", m.getGenre(), "Delete"});
         }

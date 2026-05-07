@@ -5,20 +5,15 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import model.Booking;
 import model.Seat;
 import model.Show;
-import model.Booking;
+import service.CinemaServiceManager;
 
 public class UserSeatSelectionScreen extends JFrame {
     private final JLabel totalLabel = new JLabel();
-    private final int pricePerSeat = 14;
     private final SeatToggleButton[][] seatButtons = new SeatToggleButton[4][10];
     private final Show show;
 
@@ -193,10 +188,10 @@ public class UserSeatSelectionScreen extends JFrame {
                 JOptionPane.showMessageDialog(this, "Please select at least one seat.", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            int newId = ApplicationServices.getInstance().getBookingService().getAllBookings().size() + 1;
-            Booking b = ApplicationServices.getInstance().getBookingService().createBooking(newId, show, selectedSeats, "Moviegoer");
+            int newId = CinemaServiceManager.getInstance().getBookingService().getNextBookingId();
+            Booking b = CinemaServiceManager.getInstance().getBookingService().createBooking(newId, show, selectedSeats, "Moviegoer");
             if (b != null) {
-                showReceiptAndSave(b);
+                showReceipt(b);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Some selected seats are no longer available.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -208,33 +203,8 @@ public class UserSeatSelectionScreen extends JFrame {
         return footer;
     }
 
-    private void showReceiptAndSave(Booking b) {
-        StringBuilder receipt = new StringBuilder();
-        receipt.append("==============================\n");
-        receipt.append("      CINERESERVE RECEIPT     \n");
-        receipt.append("==============================\n");
-        receipt.append("Booking ID: #CR-").append(String.format("%04d", b.getId())).append("\n");
-        receipt.append("Date: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n");
-        receipt.append("Movie: ").append(b.getShow().getMovie().getTitle()).append("\n");
-        receipt.append("Screen: ").append(b.getShow().getScreen().getName()).append("\n");
-        receipt.append("Showtime: ").append(b.getShow().getShowTime()).append("\n");
-        receipt.append("------------------------------\n");
-        receipt.append("Seats: ");
-        for (int i = 0; i < b.getSeats().size(); i++) {
-            Seat s = b.getSeats().get(i);
-            receipt.append(s.getRow()).append(s.getNumber());
-            if (i < b.getSeats().size() - 1) receipt.append(", ");
-        }
-        receipt.append("\n");
-        double total = b.getSeats().size() * pricePerSeat;
-        receipt.append(String.format("Total Price: $%.2f\n", total));
-        receipt.append("==============================\n");
-
-        try (PrintWriter out = new PrintWriter(new FileWriter("receipts.txt", true))) {
-            out.println(receipt.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void showReceipt(Booking b) {
+        String receipt = CinemaServiceManager.getInstance().getReceiptService().generateReceipt(b);
 
         JTextArea textArea = new JTextArea(receipt.toString());
         textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -254,7 +224,7 @@ public class UserSeatSelectionScreen extends JFrame {
                 }
             }
         }
-        totalLabel.setText(String.format("Total Price: $%.2f", selectedCount * (double) pricePerSeat));
+        totalLabel.setText(String.format("Total Price: $%.2f", selectedCount * show.getPricePerSeat()));
     }
 
     private static class SeatToggleButton extends JToggleButton {

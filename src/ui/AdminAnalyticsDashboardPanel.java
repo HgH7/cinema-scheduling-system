@@ -1,13 +1,18 @@
 package ui;
 
+import service.AnalyticsService;
+import service.CinemaServiceManager;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import model.Booking;
+import service.ReceiptService;
 
 public class AdminAnalyticsDashboardPanel extends JPanel {
     private DefaultTableModel movieTableModel;
@@ -27,6 +32,7 @@ public class AdminAnalyticsDashboardPanel extends JPanel {
 
         add(createHeader(), BorderLayout.NORTH);
         add(createContent(), BorderLayout.CENTER);
+        refreshData();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
@@ -215,110 +221,50 @@ public class AdminAnalyticsDashboardPanel extends JPanel {
         return panel;
     }
 
-    private void refreshData() {
+    public void refreshData() {
+        List<ReceiptService.ReceiptData> receiptData = getReceiptData();
+        AnalyticsService analytics = CinemaServiceManager.getInstance().getAnalyticsService();
+
+        // Clear tables
         movieTableModel.setRowCount(0);
         dayTableModel.setRowCount(0);
 
-        Map<String, SalesData> movieSales = new HashMap<>();
-        Map<String, SalesData> daySales = new HashMap<>();
-        Map<String, Integer> movieBookingCounts = new HashMap<>();
-        double totalRevenue = 0;
-        int totalTickets = 0;
-        int totalBookings = 0;
+        // Use receipt data directly when available
+        AnalyticsService.SalesMetrics metrics = analytics.computeMetrics(receiptData);
+        Map<String, AnalyticsService.MovieSalesData> movieSales = analytics.computeSalesByMovie(receiptData);
+        Map<String, AnalyticsService.DailySalesData> daySales = analytics.computeSalesByDate(receiptData);
+        Map<String, Integer> popularity = analytics.computeMoviePopularity(receiptData);
+        String topMovie = analytics.computeTopMovie(receiptData);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("receipts.txt"))) {
-            String line;
-            String currentMovie = "";
-            String currentDate = "";
-            int currentTickets = 0;
-            double currentRevenue = 0;
-
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith("Movie: ")) {
-                    currentMovie = line.substring(7);
-                } else if (line.startsWith("Date: ")) {
-                    currentDate = line.substring(6);
-                    // Extract just the date part (YYYY-MM-DD)
-                    if (currentDate.length() > 10) {
-                        currentDate = currentDate.substring(0, 10);
-                    }
-                } else if (line.startsWith("Seats: ")) {
-                    String seats = line.substring(7);
-                    currentTickets = seats.split(", ").length;
-                } else if (line.startsWith("Total Price: ")) {
-                    String priceStr = line.substring(13).replace("$", "");
-                    try {
-                        currentRevenue = Double.parseDouble(priceStr);
-                    } catch (NumberFormatException e) {
-                        currentRevenue = 0;
-                    }
-
-                    // Update movie sales
-                    movieSales.putIfAbsent(currentMovie, new SalesData());
-                    SalesData movieData = movieSales.get(currentMovie);
-                    movieData.tickets += currentTickets;
-                    movieData.revenue += currentRevenue;
-                    movieBookingCounts.put(currentMovie, movieBookingCounts.getOrDefault(currentMovie, 0) + 1);
-
-                    // Update day sales
-                    daySales.putIfAbsent(currentDate, new SalesData());
-                    SalesData dayData = daySales.get(currentDate);
-                    dayData.tickets += currentTickets;
-                    dayData.revenue += currentRevenue;
-
-                    // Update totals
-                    totalTickets += currentTickets;
-                    totalRevenue += currentRevenue;
-                    totalBookings++;
-
-                    // Reset current booking data
-                    currentMovie = "";
-                    currentDate = "";
-                    currentTickets = 0;
-                    currentRevenue = 0;
-                }
-            }
-        } catch (IOException e) {
-            // File might not exist yet, ignore
-        }
-
-        // Add movie sales to table (sorted by revenue)
+        // Populate movie sales table
         movieSales.entrySet().stream()
                 .sorted((a, b) -> Double.compare(b.getValue().revenue, a.getValue().revenue))
                 .forEach(entry -> movieTableModel.addRow(new Object[]{
                         entry.getKey(),
-                        entry.getValue().tickets,
+                        entry.getValue().ticketCount,
                         String.format("$%.2f", entry.getValue().revenue)
                 }));
 
-        // Add day sales to table (sorted by date)
+        // Populate day sales table
         daySales.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> dayTableModel.addRow(new Object[]{
                         entry.getKey(),
-                        entry.getValue().tickets,
+                        entry.getValue().ticketCount,
                         String.format("$%.2f", entry.getValue().revenue)
                 }));
 
-        // Update summary
-        totalRevenueLabel.setText(String.format("$%.2f", totalRevenue));
-        totalTicketsLabel.setText(String.valueOf(totalTickets));
-        totalBookingsLabel.setText(String.valueOf(totalBookings));
-        avgPriceLabel.setText(totalBookings == 0 ? "$0.00" : String.format("$%.2f", totalRevenue / totalBookings));
-        topMovieLabel.setText(getTopMovie(movieSales));
-        popularityArea.setText(getPopularityText(movieBookingCounts));
-    }
+        // Update summary labels
+        totalRevenueLabel.setText(String.format("$%.2f", metrics.totalRevenue));
+        totalTicketsLabel.setText(String.valueOf(metrics.totalTickets));
+        totalBookingsLabel.setText(String.valueOf(metrics.totalBookings));
+        avgPriceLabel.setText(String.format("$%.2f", metrics.avgPricePerBooking));
+        topMovieLabel.setText(topMovie != null ? topMovie : "N/A");
 
-    private String getTopMovie(Map<String, SalesData> movieSales) {
-        String topMovie = "N/A";
-        double maxRevenue = -1;
-        for (Map.Entry<String, SalesData> entry : movieSales.entrySet()) {
-            if (entry.getValue().revenue > maxRevenue) {
-                maxRevenue = entry.getValue().revenue;
-                topMovie = entry.getKey();
-            }
-        }
-        return topMovie;
+        // Update popularity text
+        popularityArea.setText(getPopularityText(popularity));
+        revalidate();
+        repaint();
     }
 
     private String getPopularityText(Map<String, Integer> movieBookingCounts) {
@@ -336,8 +282,33 @@ public class AdminAnalyticsDashboardPanel extends JPanel {
         return stats.toString();
     }
 
-    private static class SalesData {
-        int tickets = 0;
-        double revenue = 0;
+    private List<ReceiptService.ReceiptData> getReceiptData() {
+        ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
+        List<ReceiptService.ReceiptData> receipts = receiptService.getAllReceiptData();
+        if (!receipts.isEmpty()) {
+            return receipts;
+        }
+
+        List<Booking> bookings = CinemaServiceManager.getInstance().getBookingService().getAllBookings();
+        List<ReceiptService.ReceiptData> fallback = new java.util.ArrayList<>();
+        String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        for (Booking booking : bookings) {
+            List<String> seatLabels = new java.util.ArrayList<>();
+            for (model.Seat seat : booking.getSeats()) {
+                seatLabels.add(seat.getRow() + seat.getNumber());
+            }
+            String bookingDate = booking.getShow().getStartTime() != null
+                    ? booking.getShow().getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    : currentDateTime;
+            fallback.add(new ReceiptService.ReceiptData(
+                    String.valueOf(booking.getId()),
+                    bookingDate,
+                    booking.getShow().getMovie().getTitle(),
+                    booking.getShow().getScreen().getName(),
+                    booking.getShow().getShowTime(),
+                    seatLabels,
+                    booking.getTotalPrice()));
+        }
+        return fallback;
     }
 }
