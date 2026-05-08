@@ -2,22 +2,18 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 import model.Booking;
 import service.CinemaServiceManager;
 import service.ReceiptService;
 
 public class AdminBookingManagementPanel extends JPanel {
     private DefaultTableModel tableModel;
-    private JButton cancelSelectedButton;
-    private String selectedBookingId;
+    private JButton cancelBookingButton;
+    private JTextField seatRowField;
+    private JTextField seatNumberField;
+    private JComboBox<String> showComboBox;
 
     public AdminBookingManagementPanel() {
         setOpaque(true);
@@ -32,6 +28,7 @@ public class AdminBookingManagementPanel extends JPanel {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
                 refreshTable();
+                updateShowComboBox();
             }
         });
     }
@@ -40,7 +37,7 @@ public class AdminBookingManagementPanel extends JPanel {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
 
-        JLabel title = new JLabel("Booking Overview");
+        JLabel title = new JLabel("Cancel Booking");
         title.setForeground(UITheme.TEXT);
         title.setFont(UITheme.FONT_TITLE);
 
@@ -51,25 +48,48 @@ public class AdminBookingManagementPanel extends JPanel {
     private JPanel createContent() {
         JPanel content = new JPanel(new BorderLayout(0, 16));
         content.setOpaque(false);
-        content.add(createFilterPanel(), BorderLayout.NORTH);
+        content.add(createCancelBookingPanel(), BorderLayout.NORTH);
         content.add(createTablePanel(), BorderLayout.CENTER);
         return content;
     }
 
-    private JPanel createFilterPanel() {
-        JPanel filters = new JPanel(new GridLayout(1, 3, 12, 12));
-        filters.setOpaque(true);
-        filters.setBackground(UITheme.SURFACE);
-        filters.setBorder(BorderFactory.createCompoundBorder(
+    private JPanel createCancelBookingPanel() {
+        JPanel panel = new JPanel(new GridLayout(1, 4, 12, 12));
+        panel.setOpaque(true);
+        panel.setBackground(UITheme.SURFACE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(UITheme.BORDER),
                 new EmptyBorder(16, 16, 16, 16)
         ));
 
-        filters.add(labeledField("Search Bookings", new JTextField()));
-        filters.add(labeledField("Date Range", new JComboBox<>(new String[]{"Last 7 Days", "Last 30 Days", "Custom Range"})));
-        filters.add(labeledField("Status", new JComboBox<>(new String[]{"All Statuses", "Confirmed", "Cancelled"})));
+        seatRowField = new JTextField();
+        UIStyles.styleTextField(seatRowField);
+        seatRowField.setToolTipText("Enter seat row (e.g., A, B, C)");
 
-        return filters;
+        seatNumberField = new JTextField();
+        UIStyles.styleTextField(seatNumberField);
+        seatNumberField.setToolTipText("Enter seat number (e.g., 1, 2, 3)");
+
+        showComboBox = new JComboBox<>();
+        UIStyles.styleComboBox(showComboBox);
+
+        panel.add(labeledField("Seat Row", seatRowField));
+        panel.add(labeledField("Seat Number", seatNumberField));
+        panel.add(labeledField("Show", showComboBox));
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        buttonPanel.setOpaque(false);
+        cancelBookingButton = new JButton("Cancel Booking");
+        UIStyles.stylePrimaryButton(cancelBookingButton);
+        cancelBookingButton.addActionListener(e -> cancelBookingByInput());
+        buttonPanel.add(cancelBookingButton);
+
+        JPanel containerPanel = new JPanel(new BorderLayout());
+        containerPanel.setOpaque(false);
+        containerPanel.add(panel, BorderLayout.CENTER);
+        containerPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        return containerPanel;
     }
 
     private JPanel createTablePanel() {
@@ -81,7 +101,7 @@ public class AdminBookingManagementPanel extends JPanel {
                 new EmptyBorder(16, 16, 16, 16)
         ));
 
-        String[] columns = {"Booking ID", "Movie Title", "User Name", "Selected Seats", "Date & Time", "Status", "Actions"};
+        String[] columns = {"Booking ID", "Movie Title", "User Name", "Selected Seats", "Date & Time", "Status"};
         tableModel = new DefaultTableModel(new Object[0][0], columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -95,60 +115,16 @@ public class AdminBookingManagementPanel extends JPanel {
         table.setRowHeight(36);
         UIStyles.styleDarkTable(table);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        configureTableSelection(table);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         panel.add(scroll, BorderLayout.CENTER);
-        panel.add(createActionBar(), BorderLayout.SOUTH);
         return panel;
-    }
-
-    private JPanel createActionBar() {
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        actions.setOpaque(false);
-
-        cancelSelectedButton = new JButton("Cancel Selected Booking");
-        UIStyles.stylePrimaryButton(cancelSelectedButton);
-        cancelSelectedButton.setEnabled(false);
-        cancelSelectedButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedBookingId != null) {
-                    promptCancelBooking(selectedBookingId);
-                }
-            }
-        });
-
-        actions.add(cancelSelectedButton);
-        return actions;
-    }
-
-    private void configureTableSelection(JTable table) {
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    int row = table.getSelectedRow();
-                    if (row >= 0) {
-                        selectedBookingId = (String) tableModel.getValueAt(row, 0);
-                        cancelSelectedButton.setEnabled(true);
-                    } else {
-                        selectedBookingId = null;
-                        cancelSelectedButton.setEnabled(false);
-                    }
-                }
-            }
-        });
     }
 
     public void refreshTable() {
         if (tableModel == null) return;
         tableModel.setRowCount(0);
-        selectedBookingId = null;
-        if (cancelSelectedButton != null) {
-            cancelSelectedButton.setEnabled(false);
-        }
 
         ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
         java.util.List<ReceiptService.ReceiptData> receipts = receiptService.getAllReceiptData();
@@ -160,8 +136,7 @@ public class AdminBookingManagementPanel extends JPanel {
                         booking.getUserName(),
                         booking.getSeats().stream().map(seat -> seat.getRow() + seat.getNumber()).reduce((a, b) -> a + ", " + b).orElse(""),
                         booking.getShow().getShowTime(),
-                        "Confirmed",
-                        "Cancel"
+                        "Confirmed"
                 });
             }
             return;
@@ -174,53 +149,84 @@ public class AdminBookingManagementPanel extends JPanel {
                     "Moviegoer",
                     receipt.seats.toString().replace("[", "").replace("]", "").replace(", ", ", "),
                     receipt.date + " " + receipt.showtime,
-                    "Confirmed",
-                    "Cancel"
+                    "Confirmed"
             });
         }
     }
 
-    private void promptCancelBooking(String bookingId) {
-        ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
-        ReceiptService.ReceiptData receipt = findReceiptById(bookingId);
-        String seatText = receipt != null ? receipt.seats.toString().replace("[", "").replace("]", "") : "Unknown";
-        String message = "Booking ID: #CR-" + bookingId + "\n"
-                + "Movie: " + (receipt != null ? receipt.movie : "Unknown") + "\n"
-                + "Showtime: " + (receipt != null ? receipt.showtime : "Unknown") + "\n"
-                + "Seats: " + seatText + "\n\n"
-                + "Do you want to cancel this booking?";
-        int option = JOptionPane.showConfirmDialog(this, message, "Confirm Cancel Booking", JOptionPane.YES_NO_OPTION);
-        if (option == JOptionPane.YES_OPTION) {
-            cancelBooking(bookingId);
+    private void updateShowComboBox() {
+        showComboBox.removeAllItems();
+        java.util.List<model.Show> allShows = CinemaServiceManager.getInstance().getShowService().getAllShows();
+        for (model.Show show : allShows) {
+            showComboBox.addItem(show.getMovie().getTitle() + " - " + show.getShowTime() + " (Show ID: " + show.getId() + ")");
         }
     }
 
-    private ReceiptService.ReceiptData findReceiptById(String bookingId) {
-        for (ReceiptService.ReceiptData receipt : CinemaServiceManager.getInstance().getReceiptService().getAllReceiptData()) {
-            if (receipt.bookingId.equals(bookingId)) {
-                return receipt;
+    private void cancelBookingByInput() {
+        String seatRow = seatRowField.getText().trim().toUpperCase();
+        String seatNumberStr = seatNumberField.getText().trim();
+        int selectedShowIndex = showComboBox.getSelectedIndex();
+
+        // Validation
+        if (seatRow.isEmpty() || seatNumberStr.isEmpty() || selectedShowIndex < 0) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int seatNumber;
+        try {
+            seatNumber = Integer.parseInt(seatNumberStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Seat number must be a valid integer.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Find booking by seat and show
+        java.util.List<model.Show> allShows = CinemaServiceManager.getInstance().getShowService().getAllShows();
+        model.Show selectedShow = allShows.get(selectedShowIndex);
+
+        Booking bookingToCancel = findBookingByShowAndSeat(selectedShow, seatRow, seatNumber);
+        if (bookingToCancel == null) {
+            JOptionPane.showMessageDialog(this, "No booking found for seat " + seatRow + seatNumber + " in the selected show.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Confirm cancellation
+        String message = "Booking ID: #" + bookingToCancel.getBookingId() + "\n"
+                + "Movie: " + bookingToCancel.getShow().getMovie().getTitle() + "\n"
+                + "Showtime: " + bookingToCancel.getShow().getShowTime() + "\n"
+                + "Seats: " + bookingToCancel.getSeats().stream().map(seat -> seat.getRow() + seat.getNumber()).reduce((a, b) -> a + ", " + b).orElse("") + "\n\n"
+                + "Do you want to cancel this booking?";
+        int option = JOptionPane.showConfirmDialog(this, message, "Confirm Cancel Booking", JOptionPane.YES_NO_OPTION);
+
+        if (option == JOptionPane.YES_OPTION) {
+            ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
+            boolean removed = receiptService.removeReceipt(bookingToCancel.getBookingId());
+            boolean bookingCanceled = CinemaServiceManager.getInstance().getBookingService().cancelBooking(bookingToCancel.getId());
+
+            if (removed || bookingCanceled) {
+                JOptionPane.showMessageDialog(this, "Booking cancelled successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                refreshTable();
+                seatRowField.setText("");
+                seatNumberField.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Unable to cancel booking.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private Booking findBookingByShowAndSeat(model.Show show, String seatRow, int seatNumber) {
+        java.util.List<Booking> allBookings = CinemaServiceManager.getInstance().getBookingService().getAllBookings();
+        for (Booking booking : allBookings) {
+            if (booking.getShow().getId() == show.getId()) {
+                for (model.Seat seat : booking.getSeats()) {
+                    if (seat.getRow().equalsIgnoreCase(seatRow) && seat.getNumber() == seatNumber) {
+                        return booking;
+                    }
+                }
             }
         }
         return null;
-    }
-
-    private void cancelBooking(String bookingId) {
-        ReceiptService receiptService = CinemaServiceManager.getInstance().getReceiptService();
-        boolean removed = receiptService.removeReceipt(bookingId);
-        boolean bookingCanceled = false;
-        try {
-            int idValue = Integer.parseInt(bookingId);
-            bookingCanceled = CinemaServiceManager.getInstance().getBookingService().cancelBooking(idValue);
-        } catch (NumberFormatException ignored) {
-            // If the booking id does not parse, we still remove the receipt data.
-        }
-        if (removed || bookingCanceled) {
-            refreshTable();
-            selectedBookingId = null;
-            cancelSelectedButton.setEnabled(false);
-        } else {
-            JOptionPane.showMessageDialog(this, "Unable to cancel booking. Receipt not found.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     private JPanel labeledField(String labelText, JComponent component) {

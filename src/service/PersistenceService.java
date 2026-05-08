@@ -13,6 +13,7 @@ import java.util.List;
 public class PersistenceService {
 
     private static final String MOVIES_FILE = "movies.txt";
+    private static final String SHOWS_FILE = "shows.txt";
     private static final String RECEIPTS_FILE = "receipts.txt";
 
     /**
@@ -56,6 +57,37 @@ public class PersistenceService {
         } catch (IOException e) {
             System.err.println("Error saving movies: " + e.getMessage());
         }
+    }
+
+    /**
+     * Saves shows to the shows.txt file
+     * @param shows List of shows to save
+     */
+    public void saveShows(List<model.Show> shows) {
+        try (PrintWriter out = new PrintWriter(new FileWriter(SHOWS_FILE))) {
+            for (model.Show show : shows) {
+                out.println(show.getId() + "|" + show.getMovie().getId() + "|" + show.getScreen().getId() + "|" + show.getShowTime());
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving shows: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads shows from the shows.txt file
+     * @return List of saved show lines
+     */
+    public List<String> loadShows() {
+        List<String> shows = new ArrayList<>();
+        File file = new File(SHOWS_FILE);
+        if (file.exists()) {
+            try {
+                shows = Files.readAllLines(file.toPath());
+            } catch (IOException e) {
+                System.err.println("Error loading shows: " + e.getMessage());
+            }
+        }
+        return shows;
     }
 
     /**

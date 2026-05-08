@@ -40,6 +40,8 @@ public class AdminAnalyticsDashboardPanel extends JPanel {
                 refreshData();
             }
         });
+
+        CinemaServiceManager.getInstance().addDataChangeListener(this::refreshData);
     }
 
     private JPanel createHeader() {

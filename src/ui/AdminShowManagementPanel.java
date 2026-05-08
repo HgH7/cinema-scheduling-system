@@ -16,6 +16,8 @@ public class AdminShowManagementPanel extends JPanel {
     private JComboBox<String> screenBox;
     private JTextField timeField;
     private DefaultTableModel tableModel;
+    private JTable table;
+    private JButton deleteButton;
 
     public AdminShowManagementPanel() {
         setOpaque(true);
@@ -151,22 +153,72 @@ public class AdminShowManagementPanel extends JPanel {
         title.setFont(UITheme.FONT_SEMIBOLD);
         panel.add(title, BorderLayout.NORTH);
 
-        String[] columns = {"Movie", "Screen", "Time", "Status"};
+        String[] columns = {"Movie", "Screen", "Time", "Status", "Action"};
         tableModel = new DefaultTableModel(new Object[0][0], columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 4; // Only Action column is editable
             }
         };
         refreshTable();
-        JTable table = new JTable(tableModel);
+        table = new JTable(tableModel);
         table.setRowHeight(40);
         UIStyles.styleDarkTable(table);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         panel.add(scroll, BorderLayout.CENTER);
+        panel.add(createActionBar(), BorderLayout.SOUTH);
         return panel;
+    }
+
+    private JPanel createActionBar() {
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        actions.setOpaque(false);
+
+        deleteButton = new JButton("Delete Selected Show");
+        UIStyles.stylePrimaryButton(deleteButton);
+        deleteButton.setEnabled(false);
+        deleteButton.addActionListener(e -> deleteSelectedShow());
+        
+        table.getSelectionModel().addListSelectionListener(event -> {
+            deleteButton.setEnabled(table.getSelectedRow() >= 0);
+        });
+
+        actions.add(deleteButton);
+        return actions;
+    }
+
+    private void deleteSelectedShow() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a show to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String movieTitle = (String) tableModel.getValueAt(selectedRow, 0);
+        String screenName = (String) tableModel.getValueAt(selectedRow, 1);
+        String time = (String) tableModel.getValueAt(selectedRow, 2);
+
+        int confirmResult = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to delete the show:\n" + movieTitle + " at " + time + " on " + screenName + "?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirmResult == JOptionPane.YES_OPTION) {
+            // Find and remove the show
+            for (Show s : CinemaServiceManager.getInstance().getShowService().getAllShows()) {
+                if (s.getMovie().getTitle().equals(movieTitle) && 
+                    s.getScreen().getName().equals(screenName) && 
+                    s.getShowTime().equals(time)) {
+                    CinemaServiceManager.getInstance().getShowService().removeShow(s.getId());
+                    refreshTable();
+                    JOptionPane.showMessageDialog(this, "Show deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Show not found.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void refreshMovieBox() {
@@ -179,7 +231,7 @@ public class AdminShowManagementPanel extends JPanel {
     public void refreshTable() {
         tableModel.setRowCount(0);
         for (Show s : CinemaServiceManager.getInstance().getShowService().getAllShows()) {
-            tableModel.addRow(new Object[]{s.getMovie().getTitle(), s.getScreen().getName(), s.getShowTime(), "Active"});
+            tableModel.addRow(new Object[]{s.getMovie().getTitle(), s.getScreen().getName(), s.getShowTime(), "Active", "Delete"});
         }
     }
 }

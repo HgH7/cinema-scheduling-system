@@ -34,6 +34,7 @@ public class BookingService {
 
         // Generate and save receipt
         receiptService.generateAndSaveReceipt(booking);
+        CinemaServiceManager.getInstance().notifyDataChangeListeners();
 
         return booking;
     }
@@ -121,12 +122,17 @@ public class BookingService {
                 seat.setStatus(SeatStatus.AVAILABLE);
             }
             bookings.remove(booking);
+            CinemaServiceManager.getInstance().notifyDataChangeListeners();
             return true;
         }
 
         ReceiptService.ReceiptData receipt = receiptService.getReceiptById(String.valueOf(bookingId));
         if (receipt != null) {
-            return cancelBookingFromReceipt(receipt);
+            boolean canceled = cancelBookingFromReceipt(receipt);
+            if (canceled) {
+                CinemaServiceManager.getInstance().notifyDataChangeListeners();
+            }
+            return canceled;
         }
 
         return false;

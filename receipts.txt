@@ -258,3 +258,302 @@ Seats: A5, B4, B6, C4, C6, D5
 Total Price: $60.00
 ==============================
 
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0001
+Date: 2026-05-07 19:19:37
+Movie: dune part 1
+Screen: Screen 1
+Showtime: 18:30
+------------------------------
+Seats: A4, B5, C4
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0001
+Date: 2026-05-08 15:37:18
+Movie: dune part 1
+Screen: Screen 1
+Showtime: 18:30
+------------------------------
+Seats: B5, C4, C5, C6
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0001
+Date: 2026-05-08 15:56:04
+Movie: dune part 2
+Screen: Screen 2
+Showtime: 20:15
+------------------------------
+Seats: B5, C4, C6
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0002
+Date: 2026-05-08 15:57:06
+Movie: dune part 2
+Screen: Screen 2
+Showtime: 20:15
+------------------------------
+Seats: A1, A2
+Total Price: $20.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0001
+Date: 2026-05-08 16:14:31
+Movie: Avengers
+Screen: Screen 1
+Showtime: 21:30
+------------------------------
+Seats: A1, A2, C2, D1
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0002
+Date: 2026-05-08 16:15:17
+Movie: Spider Man
+Screen: Screen 3
+Showtime: 18:30
+------------------------------
+Seats: C5, D4, D6
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0003
+Date: 2026-05-08 16:15:25
+Movie: Spider Man
+Screen: Screen 4
+Showtime: 19:30
+------------------------------
+Seats: A4, A5, A6
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0004
+Date: 2026-05-08 16:15:38
+Movie: Avengers
+Screen: Screen 1
+Showtime: 21:30
+------------------------------
+Seats: A4, A5, A6
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0001
+Date: 2026-05-08 16:30:25
+Movie: Fight Club
+Screen: Screen 2
+Showtime: 20:15
+------------------------------
+Seats: A1, A2
+Total Price: $20.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0002
+Date: 2026-05-08 16:30:30
+Movie: Fight Club
+Screen: Screen 2
+Showtime: 20:15
+------------------------------
+Seats: A6, B6, C6
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0003
+Date: 2026-05-08 16:30:37
+Movie: Avengers
+Screen: Screen 1
+Showtime: 21:30
+------------------------------
+Seats: A5, A6, B5, B6
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0004
+Date: 2026-05-08 16:30:42
+Movie: The Wolf Of The Wall Street
+Screen: Screen 3
+Showtime: 18:30
+------------------------------
+Seats: A9, A10, B10
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0005
+Date: 2026-05-08 16:30:51
+Movie: Game Of Thrones
+Screen: Screen 4
+Showtime: 12:30
+------------------------------
+Seats: A2, B1, C2, D1
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0006
+Date: 2026-05-08 16:30:58
+Movie: The bear
+Screen: Screen 5
+Showtime: 18:30
+------------------------------
+Seats: A10, B10, C9, D8
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0007
+Date: 2026-05-08 16:31:02
+Movie: Spider Man
+Screen: Screen 3
+Showtime: 05:30
+------------------------------
+Seats: A6, B6, C6, D6
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0008
+Date: 2026-05-08 16:31:08
+Movie: The GodFather
+Screen: Screen 2
+Showtime: 12:30
+------------------------------
+Seats: A5, B6, C5, D6
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0009
+Date: 2026-05-08 16:31:15
+Movie: Oppenheimer
+Screen: Screen 5
+Showtime: 05:30
+------------------------------
+Seats: A4, A5, A6
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0001
+Date: 2026-05-08 16:31:38
+Movie: Fight Club
+Screen: Screen 2
+Showtime: 20:15
+------------------------------
+Seats: A1, A2, B2
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0002
+Date: 2026-05-08 16:31:42
+Movie: Avengers
+Screen: Screen 1
+Showtime: 21:30
+------------------------------
+Seats: A4, A5, A6
+Total Price: $30.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0001
+Date: 2026-05-08 16:39:44
+Movie: Fight Club
+Screen: Screen 2
+Showtime: 20:15
+------------------------------
+Seats: A1, A2
+Total Price: $20.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0002
+Date: 2026-05-08 16:39:51
+Movie: Avengers
+Screen: Screen 1
+Showtime: 21:30
+------------------------------
+Seats: A6, B6, C6, D6
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0010
+Date: 2026-05-08 16:49:17
+Movie: Fight Club
+Screen: Screen 2
+Showtime: 20:15
+------------------------------
+Seats: A1, B1, C1, D1
+Total Price: $40.00
+==============================
+
+==============================
+      CINERESERVE RECEIPT     
+==============================
+Booking ID: #CR-0011
+Date: 2026-05-08 16:49:59
+Movie: Avengers
+Screen: Screen 1
+Showtime: 21:30
+------------------------------
+Seats: A1, A2, A4, A5, A6, A8, A9, A10
+Total Price: $80.00
+==============================
+

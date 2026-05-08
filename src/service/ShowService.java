@@ -3,6 +3,8 @@ package service;
 import model.Show;
 import model.Movie;
 import model.Screen;
+import service.MovieService;
+import service.PersistenceService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +13,24 @@ import java.util.List;
  * Service for show operations
  */
 public class ShowService {
+    private final PersistenceService persistenceService;
     private List<Show> shows = new ArrayList<>();
 
+    public ShowService(PersistenceService persistenceService) {
+        this.persistenceService = persistenceService;
+    }
+
     public Show addShow(int id, Movie movie, Screen screen, String showTime) {
+        if (movie == null) {
+            return null;
+        }
         if (hasTimeConflict(screen, showTime, movie.getDuration())) {
             return null;
         }
 
         Show show = new Show(id, movie, screen, showTime);
         shows.add(show);
+        persistenceService.saveShows(shows);
         return show;
     }
 
@@ -64,10 +75,47 @@ public class ShowService {
         for (Show s : shows) {
             if (s.getId() == id) {
                 shows.remove(s);
+                persistenceService.saveShows(shows);
                 return true;
             }
         }
         return false;
+    }
+
+    public void saveShows() {
+        persistenceService.saveShows(shows);
+    }
+
+    public void loadShows(MovieService movieService, List<Screen> screens) {
+        shows.clear();
+        List<String> showLines = persistenceService.loadShows();
+        for (String line : showLines) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+            String[] parts = line.split("\\|");
+            if (parts.length < 4) {
+                continue;
+            }
+            try {
+                int id = Integer.parseInt(parts[0]);
+                int movieId = Integer.parseInt(parts[1]);
+                int screenId = Integer.parseInt(parts[2]);
+                String showTime = parts[3];
+                Movie movie = movieService.findMovieById(movieId);
+                Screen screen = null;
+                for (Screen s : screens) {
+                    if (s.getId() == screenId) {
+                        screen = s;
+                        break;
+                    }
+                }
+                if (movie != null && screen != null) {
+                    shows.add(new Show(id, movie, screen, showTime));
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
     }
 
     /**

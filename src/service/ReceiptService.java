@@ -102,25 +102,28 @@ public class ReceiptService {
     public List<ReceiptData> getAllReceiptData() {
         List<String> receiptStrings = persistenceService.loadAllReceipts();
         List<ReceiptData> receipts = new ArrayList<>();
-        List<String> currentReceipt = new ArrayList<>();
 
-        for (String line : receiptStrings) {
-            if (line.startsWith("==============================")) {
-                if (!currentReceipt.isEmpty()) {
-                    ReceiptData data = parseReceipt(String.join("\n", currentReceipt));
-                    if (data != null) {
-                        receipts.add(data);
-                    }
-                    currentReceipt.clear();
+        for (int i = 0; i < receiptStrings.size(); ) {
+            if (receiptStrings.get(i).startsWith("==============================")
+                    && i + 2 < receiptStrings.size()
+                    && receiptStrings.get(i + 1).contains("CINERESERVE")
+                    && receiptStrings.get(i + 2).startsWith("==============================")) {
+                int start = i;
+                int end = i + 3;
+                while (end < receiptStrings.size() && !receiptStrings.get(end).startsWith("==============================")) {
+                    end++;
                 }
-            }
-            currentReceipt.add(line);
-        }
-
-        if (!currentReceipt.isEmpty()) {
-            ReceiptData data = parseReceipt(String.join("\n", currentReceipt));
-            if (data != null) {
-                receipts.add(data);
+                if (end >= receiptStrings.size()) {
+                    end = receiptStrings.size() - 1;
+                }
+                List<String> block = receiptStrings.subList(start, end + 1);
+                ReceiptData data = parseReceipt(String.join("\n", block));
+                if (data != null) {
+                    receipts.add(data);
+                }
+                i = end + 1;
+            } else {
+                i++;
             }
         }
 
@@ -144,34 +147,36 @@ public class ReceiptService {
     public boolean removeReceipt(String bookingId) {
         List<String> lines = persistenceService.loadAllReceipts();
         List<String> output = new ArrayList<>();
-        List<String> block = new ArrayList<>();
-        boolean dropBlock = false;
+        boolean removed = false;
 
-        for (String line : lines) {
-            if (line.startsWith("==============================")) {
-                if (!block.isEmpty()) {
-                    if (!dropBlock) {
-                        output.addAll(block);
-                    }
-                    block.clear();
-                    dropBlock = false;
+        for (int i = 0; i < lines.size(); ) {
+            if (lines.get(i).startsWith("==============================")
+                    && i + 2 < lines.size()
+                    && lines.get(i + 1).contains("CINERESERVE")
+                    && lines.get(i + 2).startsWith("==============================")) {
+                int start = i;
+                int end = i + 3;
+                while (end < lines.size() && !lines.get(end).startsWith("==============================")) {
+                    end++;
                 }
-            }
-
-            block.add(line);
-            if (line.startsWith("Booking ID: #CR-")) {
-                String id = line.substring(line.indexOf("#CR-") + 4);
-                if (id.equals(bookingId)) {
-                    dropBlock = true;
+                if (end >= lines.size()) {
+                    end = lines.size() - 1;
                 }
+                List<String> block = lines.subList(start, end + 1);
+                ReceiptData data = parseReceipt(String.join("\n", block));
+                if (data != null && data.bookingId.equals(bookingId)) {
+                    removed = true;
+                } else {
+                    output.addAll(block);
+                }
+                i = end + 1;
+            } else {
+                output.add(lines.get(i));
+                i++;
             }
         }
 
-        if (!block.isEmpty() && !dropBlock) {
-            output.addAll(block);
-        }
-
-        if (output.size() == lines.size()) {
+        if (!removed) {
             return false;
         }
 
