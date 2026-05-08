@@ -1,50 +1,41 @@
 # Cinema Scheduling System
 
-A Java Swing cinema management application with a clean model-service-UI architecture.
+A Java Swing cinema management application with a clear MVC-like structure and separated business logic.
 
-## Overview
+## Summary
 
-This project simulates a cinema scheduling system where administrators can manage movies and shows, and users can browse available movies and book seats. The refactored design keeps UI code focused on display and interaction, while services handle business logic and persistence.
+This application allows:
+- Admin users to manage movies and schedule shows.
+- Regular users to browse films, select showtimes, choose seats, and book tickets.
+- The system to save movies, shows, and receipts in text files.
 
-## Architecture
+## Key Features
 
-- `src/model/` - Domain entities: `Movie`, `Show`, `Booking`, `Seat`, `Screen`, `SeatStatus`
-- `src/service/` - Application logic and persistence
-  - `CinemaServiceManager` - central service registry
-  - `MovieService` - movie operations and storage
-  - `ShowService` - show scheduling and conflict detection
-  - `BookingService` - seat booking and receipt creation
-  - `ReceiptService` - receipt formatting and persistence
-  - `AnalyticsService` - sales and popularity reporting
-  - `PersistenceService` - file I/O for movies and receipts
-- `src/ui/` - Swing interface components and styling
-- `src/util/` - input validation helpers
+- Movie creation, listing, and removal
+- Show scheduling with screen conflict detection
+- Seat selection and booking with receipt generation
+- Persistent storage using `movies.txt`, `shows.txt`, and `receipts.txt`
+- Simple analytics and admin dashboard support
 
-## Features
+## Project Structure
 
-- Movie management
-- Show scheduling with conflict detection
-- Seat booking with live price updates
-- Receipt generation and persistence
-- Analytics dashboard for bookings, revenue, and movie popularity
-- Light and consistent UI styling
+- `src/model/` - data entities
+- `src/service/` - application logic and persistence
+- `src/ui/` - Swing user interface screens
+- `src/util/` - validation helpers
 
-## Build
+## Build and Run
 
-```powershell
-cd d:\programing\cinema-scheduling-system
-mkdir out
+```bash
+cd cinema-scheduling-system
+mkdir -p out
 javac -d out src/Main.java src/model/*.java src/service/*.java src/ui/*.java src/util/*.java
-```
-
-## Run
-
-```powershell
 java -cp out Main
 ```
 
-## Notes
+## Notes for Instructor
 
-- The UI layer only handles interaction and display logic.
-- Business rules and persistence have been moved into the service layer.
-- Existing functionality is preserved and the project compiles cleanly.
+- `Main.java` starts the app and opens the Swing launcher.
+- `CinemaServiceManager` initializes shared services and seed data.
+- Persistence is implemented with plain text files for easy verification.
+- The UI is kept separate from business logic to make the application easier to maintain.
