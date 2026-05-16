@@ -1,16 +1,7 @@
 package util;
 
-/**
- * Utility class for validating user inputs
- * All validation methods throw ValidationException with descriptive messages
- */
 public class InputValidator {
 
-    /**
-     * Validates movie title
-     * @param title The title to validate
-     * @throws ValidationException if title is invalid
-     */
     public static void validateMovieTitle(String title) throws ValidationException {
         if (title == null || title.trim().isEmpty()) {
             throw new ValidationException("Error: Movie title cannot be empty");
@@ -26,11 +17,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates movie duration
-     * @param durationStr The duration string to validate
-     * @throws ValidationException if duration is invalid
-     */
     public static void validateDuration(String durationStr) throws ValidationException {
         if (durationStr == null || durationStr.trim().isEmpty()) {
             throw new ValidationException("Error: Duration cannot be empty");
@@ -48,11 +34,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates show time format
-     * @param time The time string to validate
-     * @throws ValidationException if time is invalid
-     */
     public static void validateShowTime(String time) throws ValidationException {
         if (time == null || time.trim().isEmpty()) {
             throw new ValidationException("Error: Show time cannot be empty");
@@ -76,11 +57,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates username
-     * @param username The username to validate
-     * @throws ValidationException if username is invalid
-     */
     public static void validateUsername(String username) throws ValidationException {
         if (username == null || username.trim().isEmpty()) {
             throw new ValidationException("Error: Username cannot be empty");
@@ -96,11 +72,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates price per seat
-     * @param priceStr The price string to validate
-     * @throws ValidationException if price is invalid
-     */
     public static void validatePrice(String priceStr) throws ValidationException {
         if (priceStr == null || priceStr.trim().isEmpty()) {
             throw new ValidationException("Error: Price cannot be empty");
@@ -118,11 +89,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates genre
-     * @param genre The genre to validate
-     * @throws ValidationException if genre is invalid
-     */
     public static void validateGenre(String genre) throws ValidationException {
         if (genre == null || genre.trim().isEmpty()) {
             throw new ValidationException("Error: Genre cannot be empty");
@@ -132,11 +98,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates image path
-     * @param imagePath The image path to validate
-     * @throws ValidationException if path is invalid
-     */
     public static void validateImagePath(String imagePath) throws ValidationException {
         if (imagePath == null || imagePath.trim().isEmpty()) {
             throw new ValidationException("Error: Image path cannot be empty");
@@ -146,11 +107,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates that at least one seat is selected
-     * @param seatCount The number of seats selected
-     * @throws ValidationException if no seats selected
-     */
     public static void validateSeatsSelected(int seatCount) throws ValidationException {
         if (seatCount == 0) {
             throw new ValidationException("Error: Please select at least one seat");
@@ -160,20 +116,12 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Validates movie/show selection
-     * @param selection The selected item
-     * @throws ValidationException if nothing selected
-     */
     public static void validateSelection(Object selection) throws ValidationException {
         if (selection == null) {
             throw new ValidationException("Error: Please select a valid option");
         }
     }
 
-    /**
-     * Base exception class for Cinema Scheduling System.
-     */
     public static class CinemaException extends Exception {
         public CinemaException(String message) {
             super(message);
@@ -184,9 +132,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Thrown when user input validation fails.
-     */
     public static class ValidationException extends CinemaException {
         public ValidationException(String message) {
             super(message);
@@ -197,9 +142,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Thrown when booking operation fails.
-     */
     public static class BookingException extends CinemaException {
         public BookingException(String message) {
             super(message);
@@ -210,9 +152,6 @@ public class InputValidator {
         }
     }
 
-    /**
-     * Thrown when show scheduling fails.
-     */
     public static class ShowSchedulingException extends CinemaException {
         public ShowSchedulingException(String message) {
             super(message);

@@ -9,9 +9,6 @@ import service.PersistenceService;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service for show operations
- */
 public class ShowService {
     private final PersistenceService persistenceService;
     private List<Show> shows = new ArrayList<>();
@@ -118,13 +115,6 @@ public class ShowService {
         }
     }
 
-    /**
-     * Checks if there's a time conflict for scheduling a show
-     * @param screen The screen to check
-     * @param showTime The proposed show time (HH:mm)
-     * @param durationMinutes The movie duration in minutes
-     * @return true if there's a conflict, false otherwise
-     */
     public boolean hasTimeConflict(Screen screen, String showTime, int durationMinutes) {
         int proposedStart = parseTime(showTime);
         int proposedEnd = proposedStart + durationMinutes;
@@ -142,11 +132,6 @@ public class ShowService {
         return false;
     }
 
-    /**
-     * Parses time string (HH:mm) to minutes since midnight
-     * @param timeString Time in HH:mm format
-     * @return Minutes since midnight
-     */
     private int parseTime(String timeString) {
         String[] parts = timeString.split(":");
         int hours = Integer.parseInt(parts[0]);
@@ -154,14 +139,6 @@ public class ShowService {
         return hours * 60 + minutes;
     }
 
-    /**
-     * Checks if two time ranges overlap
-     * @param start1 Start of first range
-     * @param end1 End of first range
-     * @param start2 Start of second range
-     * @param end2 End of second range
-     * @return true if they overlap
-     */
     private boolean isTimeOverlap(int start1, int end1, int start2, int end2) {
         return start1 < end2 && start2 < end1;
     }

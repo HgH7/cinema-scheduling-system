@@ -167,7 +167,6 @@ public class AdminBookingManagementPanel extends JPanel {
         String seatNumberStr = seatNumberField.getText().trim();
         int selectedShowIndex = showComboBox.getSelectedIndex();
 
-        // Validation
         if (seatRow.isEmpty() || seatNumberStr.isEmpty() || selectedShowIndex < 0) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -181,7 +180,6 @@ public class AdminBookingManagementPanel extends JPanel {
             return;
         }
 
-        // Find booking by seat and show
         java.util.List<model.Show> allShows = CinemaServiceManager.getInstance().getShowService().getAllShows();
         model.Show selectedShow = allShows.get(selectedShowIndex);
 
@@ -191,7 +189,6 @@ public class AdminBookingManagementPanel extends JPanel {
             return;
         }
 
-        // Confirm cancellation
         String message = "Booking ID: #" + bookingToCancel.getBookingId() + "\n"
                 + "Movie: " + bookingToCancel.getShow().getMovie().getTitle() + "\n"
                 + "Showtime: " + bookingToCancel.getShow().getShowTime() + "\n"

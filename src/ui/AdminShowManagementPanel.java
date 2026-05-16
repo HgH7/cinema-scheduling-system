@@ -157,7 +157,7 @@ public class AdminShowManagementPanel extends JPanel {
         tableModel = new DefaultTableModel(new Object[0][0], columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 4; // Only Action column is editable
+                return column == 4;
             }
         };
         refreshTable();
@@ -206,7 +206,6 @@ public class AdminShowManagementPanel extends JPanel {
             JOptionPane.YES_NO_OPTION);
 
         if (confirmResult == JOptionPane.YES_OPTION) {
-            // Find and remove the show
             for (Show s : CinemaServiceManager.getInstance().getShowService().getAllShows()) {
                 if (s.getMovie().getTitle().equals(movieTitle) && 
                     s.getScreen().getName().equals(screenName) && 

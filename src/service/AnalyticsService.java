@@ -2,9 +2,6 @@ package service;
 
 import java.util.*;
 
-/**
- * Service for analytics and reporting operations
- */
 public class AnalyticsService {
 
     private final ReceiptService receiptService;
@@ -13,10 +10,6 @@ public class AnalyticsService {
         this.receiptService = receiptService;
     }
 
-    /**
-     * Gets sales metrics summary
-     * @return Sales metrics
-     */
     public SalesMetrics getSalesMetrics() {
         List<ReceiptService.ReceiptData> receipts = receiptService.getAllReceiptData();
 
@@ -34,10 +27,6 @@ public class AnalyticsService {
         return new SalesMetrics(totalRevenue, totalTickets, totalBookings, avgPricePerBooking);
     }
 
-    /**
-     * Gets sales data grouped by movie
-     * @return Map of movie title to sales data
-     */
     public Map<String, MovieSalesData> getSalesByMovie() {
         Map<String, MovieSalesData> salesByMovie = new HashMap<>();
         List<ReceiptService.ReceiptData> receipts = receiptService.getAllReceiptData();
@@ -52,16 +41,11 @@ public class AnalyticsService {
         return salesByMovie;
     }
 
-    /**
-     * Gets sales data grouped by date
-     * @return Map of date to sales data
-     */
     public Map<String, DailySalesData> getSalesByDate() {
         Map<String, DailySalesData> salesByDate = new HashMap<>();
         List<ReceiptService.ReceiptData> receipts = receiptService.getAllReceiptData();
 
         for (ReceiptService.ReceiptData receipt : receipts) {
-            // Extract date part (yyyy-MM-dd)
             String date = receipt.date.split(" ")[0];
             DailySalesData data = salesByDate.computeIfAbsent(date, k -> new DailySalesData());
             data.bookingCount++;
@@ -72,10 +56,6 @@ public class AnalyticsService {
         return salesByDate;
     }
 
-    /**
-     * Gets movie popularity ranking
-     * @return Map of movie to popularity score
-     */
     public Map<String, Integer> getMoviePopularity() {
         Map<String, Integer> popularity = new HashMap<>();
         List<ReceiptService.ReceiptData> receipts = receiptService.getAllReceiptData();
@@ -87,10 +67,6 @@ public class AnalyticsService {
         return popularity;
     }
 
-    /**
-     * Gets the top movie by ticket sales
-     * @return Movie title or null if no data
-     */
     public String getTopMovie() {
         Map<String, Integer> popularity = getMoviePopularity();
         return popularity.entrySet().stream()
@@ -151,9 +127,6 @@ public class AnalyticsService {
                 .orElse(null);
     }
 
-    /**
-     * Data class for sales metrics
-     */
     public static class SalesMetrics {
         public final double totalRevenue;
         public final int totalTickets;
@@ -168,18 +141,12 @@ public class AnalyticsService {
         }
     }
 
-    /**
-     * Data class for movie sales data
-     */
     public static class MovieSalesData {
         public int bookingCount = 0;
         public int ticketCount = 0;
         public double revenue = 0;
     }
 
-    /**
-     * Data class for daily sales data
-     */
     public static class DailySalesData {
         public int bookingCount = 0;
         public int ticketCount = 0;

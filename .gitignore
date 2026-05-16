@@ -1,0 +1,15 @@
+# macOS folder metadata (see README)
+.DS_Store
+**/.DS_Store
+
+# Legacy root data files (app uses data/ only)
+/movies.txt
+/shows.txt
+/receipts.txt
+
+# Build output
+out/
+
+# Local scratch / design files (not part of the app)
+*.pages
+Screenshot*.png

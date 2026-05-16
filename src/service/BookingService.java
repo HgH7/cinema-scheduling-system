@@ -5,9 +5,6 @@ import model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service for booking operations
- */
 public class BookingService {
 
     private final ReceiptService receiptService;
@@ -32,7 +29,6 @@ public class BookingService {
         Booking booking = new Booking(id, show, seats, userName);
         bookings.add(booking);
 
-        // Generate and save receipt
         receiptService.generateAndSaveReceipt(booking);
         CinemaServiceManager.getInstance().notifyDataChangeListeners();
 
@@ -71,7 +67,6 @@ public class BookingService {
                     Booking booking = new Booking(receiptId, matchingShow, seats, "Moviegoer");
                     bookings.add(booking);
                 } catch (NumberFormatException ignored) {
-                    // Ignore malformed receipt IDs and continue loading remaining bookings.
                 }
             }
         }

@@ -227,18 +227,16 @@ public class AdminAnalyticsDashboardPanel extends JPanel {
         List<ReceiptService.ReceiptData> receiptData = getReceiptData();
         AnalyticsService analytics = CinemaServiceManager.getInstance().getAnalyticsService();
 
-        // Clear tables
         movieTableModel.setRowCount(0);
         dayTableModel.setRowCount(0);
 
-        // Use receipt data directly when available
         AnalyticsService.SalesMetrics metrics = analytics.computeMetrics(receiptData);
         Map<String, AnalyticsService.MovieSalesData> movieSales = analytics.computeSalesByMovie(receiptData);
         Map<String, AnalyticsService.DailySalesData> daySales = analytics.computeSalesByDate(receiptData);
         Map<String, Integer> popularity = analytics.computeMoviePopularity(receiptData);
         String topMovie = analytics.computeTopMovie(receiptData);
 
-        // Populate movie sales table
+
         movieSales.entrySet().stream()
                 .sorted((a, b) -> Double.compare(b.getValue().revenue, a.getValue().revenue))
                 .forEach(entry -> movieTableModel.addRow(new Object[]{
@@ -247,7 +245,6 @@ public class AdminAnalyticsDashboardPanel extends JPanel {
                         String.format("$%.2f", entry.getValue().revenue)
                 }));
 
-        // Populate day sales table
         daySales.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> dayTableModel.addRow(new Object[]{
@@ -256,14 +253,12 @@ public class AdminAnalyticsDashboardPanel extends JPanel {
                         String.format("$%.2f", entry.getValue().revenue)
                 }));
 
-        // Update summary labels
         totalRevenueLabel.setText(String.format("$%.2f", metrics.totalRevenue));
         totalTicketsLabel.setText(String.valueOf(metrics.totalTickets));
         totalBookingsLabel.setText(String.valueOf(metrics.totalBookings));
         avgPriceLabel.setText(String.format("$%.2f", metrics.avgPricePerBooking));
         topMovieLabel.setText(topMovie != null ? topMovie : "N/A");
 
-        // Update popularity text
         popularityArea.setText(getPopularityText(popularity));
         revalidate();
         repaint();

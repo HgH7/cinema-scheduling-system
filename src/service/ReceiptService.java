@@ -7,9 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service for handling receipt operations
- */
 public class ReceiptService {
 
     private final PersistenceService persistenceService;
@@ -18,11 +15,6 @@ public class ReceiptService {
         this.persistenceService = persistenceService;
     }
 
-    /**
-     * Generates a receipt string for a booking
-     * @param booking The booking to generate receipt for
-     * @return Formatted receipt string
-     */
     public String generateReceipt(Booking booking) {
         StringBuilder receipt = new StringBuilder();
         receipt.append("==============================\n");
@@ -45,32 +37,23 @@ public class ReceiptService {
         return receipt.toString();
     }
 
-    /**
-     * Generates and saves a receipt for a booking
-     * @param booking The booking to process
-     */
     public void generateAndSaveReceipt(Booking booking) {
         String receipt = generateReceipt(booking);
         persistenceService.saveReceipt(receipt);
     }
 
-    /**
-     * Parses a receipt string to extract booking information
-     * @param receipt The receipt string
-     * @return Parsed receipt data or null if invalid
-     */
     public ReceiptData parseReceipt(String receipt) {
         try {
             String[] lines = receipt.split("\n");
             if (lines.length < 10) return null;
 
-            String bookingIdLine = lines[3]; // "Booking ID: #CR-0001"
-            String dateLine = lines[4]; // "Date: 2023-12-01 14:30:00"
-            String movieLine = lines[5]; // "Movie: Movie Title"
-            String screenLine = lines[6]; // "Screen: Screen 1"
-            String showtimeLine = lines[7]; // "Showtime: 18:30"
-            String seatsLine = lines[9]; // "Seats: A1, A2"
-            String totalLine = lines[10]; // "Total Price: $28.00"
+            String bookingIdLine = lines[3];
+            String dateLine = lines[4];
+            String movieLine = lines[5];
+            String screenLine = lines[6];
+            String showtimeLine = lines[7];
+            String seatsLine = lines[9];
+            String totalLine = lines[10];
 
             String bookingId = bookingIdLine.substring(bookingIdLine.indexOf("#CR-") + 4);
             String date = dateLine.substring(dateLine.indexOf(": ") + 2);
@@ -95,10 +78,6 @@ public class ReceiptService {
         }
     }
 
-    /**
-     * Gets all receipt data
-     * @return List of parsed receipt data
-     */
     public List<ReceiptData> getAllReceiptData() {
         List<String> receiptStrings = persistenceService.loadAllReceipts();
         List<ReceiptData> receipts = new ArrayList<>();
@@ -139,11 +118,6 @@ public class ReceiptService {
         return null;
     }
 
-    /**
-     * Removes a receipt from the persistence file by booking id
-     * @param bookingId Booking id to remove (without prefix)
-     * @return true if a receipt was removed
-     */
     public boolean removeReceipt(String bookingId) {
         List<String> lines = persistenceService.loadAllReceipts();
         List<String> output = new ArrayList<>();
@@ -184,9 +158,6 @@ public class ReceiptService {
         return true;
     }
 
-    /**
-     * Data class for parsed receipt information
-     */
     public static class ReceiptData {
         public final String bookingId;
         public final String date;

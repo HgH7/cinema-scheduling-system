@@ -99,7 +99,21 @@ public class UserMovieCatalogPanel extends JPanel {
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
                 ImageIcon icon = new ImageIcon(imagePath);
-                Image scaled = icon.getImage().getScaledInstance(300, 220, Image.SCALE_SMOOTH);
+                Image original = icon.getImage();
+                int originalWidth = original.getWidth(null);
+                int originalHeight = original.getHeight(null);
+                
+                int targetWidth = 300;
+                int targetHeight = 220;
+
+                double scaleX = (double) targetWidth / originalWidth;
+                double scaleY = (double) targetHeight / originalHeight;
+                double scale = Math.min(scaleX, scaleY);
+                
+                int scaledWidth = (int) (originalWidth * scale);
+                int scaledHeight = (int) (originalHeight * scale);
+                
+                Image scaled = original.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
                 JLabel imgLabel = new JLabel(new ImageIcon(scaled));
                 imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 image.add(imgLabel, BorderLayout.CENTER);

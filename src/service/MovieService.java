@@ -5,9 +5,6 @@ import model.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service for movie operations
- */
 public class MovieService {
 
     private final PersistenceService persistenceService;
@@ -18,16 +15,10 @@ public class MovieService {
         this.movies = new ArrayList<>();
     }
 
-    /**
-     * Loads movies from persistence
-     */
     public void loadMovies() {
         this.movies = persistenceService.loadMovies();
     }
 
-    /**
-     * Saves movies to persistence
-     */
     public void saveMovies() {
         persistenceService.saveMovies(movies);
     }

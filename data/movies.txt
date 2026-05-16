@@ -1,0 +1,11 @@
+1|Fight Club|90|Action|img/FIGHT CLUB.jpeg
+2|Avengers|210|Action|img/avengers.jpeg
+3|The Wolf Of The Wall Street|200|Action|img/wolf.jpeg
+4|Game Of Thrones|100|Sci-Fi|img/game.jpeg
+5|Spider Man|180|Animation, Fantasy|img/spider.jpeg
+6|The bear|122|Drama|img/the bear.jpeg
+7|Interstellar|90|Sci-Fi, Action|img/Interstellar (2014) - Movie Poster.jpeg
+8|The GodFather|290|Sci-Fi, Action|img/The Godfather Movie Poster.jpeg
+9|Oppenheimer|190|Drama|img/Oppenheimer movie poster.jpeg
+10|ScarFace|90|Action|img/Scarface.jpeg
+11|The Joker|120|Horror|img/The Joker.jpeg

@@ -7,19 +7,20 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service for handling data persistence operations
- */
 public class PersistenceService {
 
-    private static final String MOVIES_FILE = "movies.txt";
-    private static final String SHOWS_FILE = "shows.txt";
-    private static final String RECEIPTS_FILE = "receipts.txt";
+    private static final String DATA_DIR = "data";
+    private static final String MOVIES_FILE = DATA_DIR + "/movies.txt";
+    private static final String SHOWS_FILE = DATA_DIR + "/shows.txt";
+    private static final String RECEIPTS_FILE = DATA_DIR + "/receipts.txt";
 
-    /**
-     * Loads movies from the movies.txt file
-     * @return List of loaded movies
-     */
+    private void ensureDataDirectory() {
+        File dir = new File(DATA_DIR);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+    }
+
     public List<Movie> loadMovies() {
         List<Movie> movies = new ArrayList<>();
         File file = new File(MOVIES_FILE);
@@ -45,11 +46,8 @@ public class PersistenceService {
         return movies;
     }
 
-    /**
-     * Saves movies to the movies.txt file
-     * @param movies List of movies to save
-     */
     public void saveMovies(List<Movie> movies) {
+        ensureDataDirectory();
         try (PrintWriter out = new PrintWriter(new FileWriter(MOVIES_FILE))) {
             for (Movie movie : movies) {
                 out.println(movie.getId() + "|" + movie.getTitle() + "|" + movie.getDuration() + "|" + movie.getGenre() + "|" + movie.getImagePath());
@@ -59,11 +57,8 @@ public class PersistenceService {
         }
     }
 
-    /**
-     * Saves shows to the shows.txt file
-     * @param shows List of shows to save
-     */
     public void saveShows(List<model.Show> shows) {
+        ensureDataDirectory();
         try (PrintWriter out = new PrintWriter(new FileWriter(SHOWS_FILE))) {
             for (model.Show show : shows) {
                 out.println(show.getId() + "|" + show.getMovie().getId() + "|" + show.getScreen().getId() + "|" + show.getShowTime());
@@ -73,10 +68,6 @@ public class PersistenceService {
         }
     }
 
-    /**
-     * Loads shows from the shows.txt file
-     * @return List of saved show lines
-     */
     public List<String> loadShows() {
         List<String> shows = new ArrayList<>();
         File file = new File(SHOWS_FILE);
@@ -90,11 +81,8 @@ public class PersistenceService {
         return shows;
     }
 
-    /**
-     * Saves a receipt to the receipts.txt file
-     * @param receipt The receipt content to append
-     */
     public void saveReceipt(String receipt) {
+        ensureDataDirectory();
         try (PrintWriter out = new PrintWriter(new FileWriter(RECEIPTS_FILE, true))) {
             out.println(receipt);
         } catch (IOException e) {
@@ -102,11 +90,8 @@ public class PersistenceService {
         }
     }
 
-    /**
-     * Saves a batch of receipt lines to receipts.txt
-     * @param receiptLines Lines to write into the receipts file
-     */
     public void saveAllReceipts(List<String> receiptLines) {
+        ensureDataDirectory();
         try (PrintWriter out = new PrintWriter(new FileWriter(RECEIPTS_FILE))) {
             for (String line : receiptLines) {
                 out.println(line);
@@ -116,10 +101,6 @@ public class PersistenceService {
         }
     }
 
-    /**
-     * Loads all receipts from the receipts.txt file
-     * @return List of receipt lines
-     */
     public List<String> loadAllReceipts() {
         List<String> receipts = new ArrayList<>();
         File file = new File(RECEIPTS_FILE);

@@ -2,9 +2,6 @@ package service;
 
 import model.Screen;
 
-/**
- * Service manager for all cinema services
- */
 public class CinemaServiceManager {
     private static CinemaServiceManager instance;
 
@@ -57,7 +54,6 @@ public class CinemaServiceManager {
     private void seedData() {
         movieService.loadMovies();
 
-        // Create default movies if none exist
         if (movieService.getAllMovies().isEmpty()) {
             movieService.addMovie(1, "The Matrix", 136, "Sci-Fi", "matrix.jpg");
             movieService.addMovie(2, "Inception", 148, "Sci-Fi", "inception.jpg");
@@ -65,7 +61,6 @@ public class CinemaServiceManager {
             movieService.saveMovies();
         }
 
-        // Seed Screens
         screens.clear();
         screens.add(new Screen(1, "Screen 1", 4, 10));
         screens.add(new Screen(2, "Screen 2", 4, 10));
@@ -73,10 +68,8 @@ public class CinemaServiceManager {
         screens.add(new Screen(4, "Screen 4", 4, 10));
         screens.add(new Screen(5, "Screen 5", 4, 10));
 
-        // Load persisted shows if they exist
         showService.loadShows(movieService, screens);
 
-        // Seed default shows only when no saved shows exist
         if (showService.getAllShows().isEmpty()) {
             showService.addShow(1, movieService.findMovieById(1), screens.get(0), "18:30");
             showService.addShow(2, movieService.findMovieById(2), screens.get(1), "20:15");
